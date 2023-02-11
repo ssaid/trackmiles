@@ -11,6 +11,6 @@ COPY . /app
 # Instalar las dependencias
 EXPOSE 3000
 
-RUN npm i
+RUN yarn
 
-CMD ["npm", "run", "dev"]
+CMD ["yarn", "dev"]
