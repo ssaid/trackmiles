@@ -8,23 +8,23 @@ services:
     volumes:
       - ./client/:/app/
   # server
-  # server:
-  #   build: ./server
-  #   env_file:
-  #     - ./server/.env.dev
-  #   ports:
-  #     - "8000:8000"
-  #   command: python manage.py runserver 0.0.0.0:8000
-  #   volumes:
-  #     - ./server/:/usr/src/app/
-  #   depends_on:
-  #   - db
-  #   - wdb
-  #   environment:
-  #     WDB_SOCKET_SERVER: wdb
-  #     WDB_NO_BROWSER_AUTO_OPEN: "true"
-  #   stdin_open: true
-  #   tty: true
+  server:
+    build: ./server
+    env_file:
+      - ./server/.env.dev
+    ports:
+      - "8000:8000"
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./server/:/app/
+    depends_on:
+    - db
+    - wdb
+    environment:
+      WDB_SOCKET_SERVER: wdb
+      WDB_NO_BROWSER_AUTO_OPEN: "true"
+    stdin_open: true
+    tty: true
  # database
   db:
     image: postgres:13
@@ -44,7 +44,7 @@ services:
       # - ./data/certbot/conf:/etc/letsencrypt
       # - ./data/certbot/www:/var/www/certbot
     links:
-      # - server
+      - server
       - client
   #   command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
 
