@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 class Common(Configuration):
-
+    
     # Build paths inside the project like this: BASE_DIR / 'subdir'.
     BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -123,7 +123,7 @@ class Common(Configuration):
 
     STATIC_URL = values.Value('/static/')
 
-    MP_ACCESS_TOKEN = values.SecretValue()
+    # MP_ACCESS_TOKEN = values.SecretValue()
 
     AUTO_USER_MODEL = 'flights.User'
 
@@ -133,7 +133,7 @@ class Dev(Common):
     The in-development settings and the default configuration.
     """
 
-    # DOTENV = os.path.join(Common.BASE_DIR, '.env.dev')
+    DOTENV = os.path.join(Common.BASE_DIR, '.env.dev')
     # ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
     SWAGGER_SETTINGS = {
@@ -150,7 +150,7 @@ class Prod(Common):
     The in-production settings.
     """
 
-    # DOTENV = os.path.join(Common.BASE_DIR, '.env.production')
+    DOTENV = os.path.join(Common.BASE_DIR, '.env.production')
     DEBUG = False
     TEMPLATE_DEBUG = DEBUG
 
