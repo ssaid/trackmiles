@@ -28,7 +28,6 @@ class Region(models.Model):
 class Flight(models.Model):
 
     airport = models.ForeignKey(Airport, on_delete=models.CASCADE, related_name="flights")
-    users = models.ManyToManyField('User', related_name="flights")
     origin = models.CharField(max_length=64)
     destination = models.CharField(max_length=64)
 
@@ -64,7 +63,16 @@ class FlightCost(models.Model):
 class User(AbstractUser):
     is_premium = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
+
     flights = models.ManyToManyField(Flight, related_name="users")
+
+    email = models.EmailField(unique=True)
+
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
+
 
 
 class Suscriptions(models.Model):

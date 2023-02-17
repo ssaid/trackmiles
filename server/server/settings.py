@@ -125,7 +125,7 @@ class Common(Configuration):
 
     # MP_ACCESS_TOKEN = values.SecretValue()
 
-    AUTO_USER_MODEL = 'flights.User'
+    AUTH_USER_MODEL = 'flights.User'
 
 
 class Dev(Common):
@@ -134,7 +134,6 @@ class Dev(Common):
     """
 
     DOTENV = os.path.join(Common.BASE_DIR, '.env.dev')
-    # ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
     SWAGGER_SETTINGS = {
         "SECURITY_DEFINITIONS": {
