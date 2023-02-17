@@ -8,31 +8,33 @@ class Airport(models.Model):
     name = models.CharField(max_length=64)
     code = models.SlugField(max_length=10, unique=True)
     city = models.CharField(max_length=64)
-    country = models.CharField(max_length=64)
+    country = models.ForeignKey('Country', on_delete=models.CASCADE, related_name="airports")
     region = models.ForeignKey('Region', on_delete=models.CASCADE, related_name="airports")
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
+class Country(models.Model):
+    
+    name = models.CharField(max_length=64)
+    code = models.SlugField(max_length=10, unique=True)
+
+class AirLine(models.Model):
+    
+    name = models.CharField(max_length=64)
+    code = models.SlugField(max_length=10, unique=True)
 
 
 class Region(models.Model):
 
-    name = models.CharField(max_length=64)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
+    name = models.SlugField(max_length=64)
 
 
 class Flight(models.Model):
 
-    airport = models.ForeignKey(Airport, on_delete=models.CASCADE, related_name="flights")
-    origin = models.CharField(max_length=64)
-    destination = models.CharField(max_length=64)
+    airport_origin = models.ForeignKey(Airport, on_delete=models.CASCADE, related_name="flight_outgoing")
+    airport_destination = models.ForeignKey(Airport, on_delete=models.CASCADE, related_name="flights_incoming")
 
+    external_link = models.URLField()
 
-    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
 
@@ -55,8 +57,16 @@ class Flight(models.Model):
 class FlightCost(models.Model):
 
     flight = models.ForeignKey(Flight, on_delete=models.CASCADE, related_name="costs")
-    cost = models.FloatField()
-    date = models.DateField(auto_now_add=True)
+    airline = models.ForeignKey(AirLine, on_delete=models.CASCADE, related_name="flight_costs")
+
+    money = models.FloatField()
+    miles = models.PositiveIntegerField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
 
 
 
@@ -68,10 +78,25 @@ class User(AbstractUser):
 
     email = models.EmailField(unique=True)
 
-
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
+
+class Preference(models.Model):
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="preferences")
+
+    region_destination = models.ForeignKey(Region, on_delete=models.CASCADE, related_name="users_destination", null=True)
+    region_origin = models.ForeignKey(Region, on_delete=models.CASCADE, related_name="users_origin", null=True)
+
+    airport_origin = models.ForeignKey(Airport, on_delete=models.CASCADE, related_name="users_origin", null=True)
+    airport_destination = models.ForeignKey(Airport, on_delete=models.CASCADE, related_name="users_destination", null=True)
+
+    country_origin = models.ForeignKey(Country, on_delete=models.CASCADE, related_name="users_origin", null=True)
+    country_destination = models.ForeignKey(Country, on_delete=models.CASCADE, related_name="users_destination", null=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 
