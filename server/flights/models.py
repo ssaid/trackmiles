@@ -102,11 +102,15 @@ class Preference(models.Model):
 
 class Suscriptions(models.Model):
 
+    def default_due_date(self):
+        return datetime.now() + timedelta(days=30)
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="suscriptions")
     price = models.FloatField()
     date = models.DateField(auto_now_add=True)
-    due = models.DateField(default=datetime.now() + timedelta(days=30))
+    due = models.DateField(default=default_due_date)
     payment_id = models.SlugField(unique=True, blank=True, null=True)
+
 
 
 class Product(models.Model):

@@ -1,13 +1,16 @@
+from datetime import timedelta
 import os
 
 from configurations import Configuration, values
 from pathlib import Path
 
 
-class Common(Configuration):
+class Dev(Configuration):
     
     # Build paths inside the project like this: BASE_DIR / 'subdir'.
     BASE_DIR = Path(__file__).resolve().parent.parent
+
+    DOTENV = os.path.join(BASE_DIR, '.env.dev')
 
     # Quick-start development settings - unsuitable for production
     # See https://docs.djangoproject.com/en/{{ docs_version }}/howto/deployment/checklist/
@@ -33,6 +36,7 @@ class Common(Configuration):
         'django.contrib.messages',
         'django.contrib.staticfiles',
         'rest_framework',
+        'rest_framework_simplejwt',
         'drf_yasg',
         'corsheaders',
         'flights',
@@ -128,28 +132,36 @@ class Common(Configuration):
     AUTH_USER_MODEL = 'flights.User'
 
 
-class Dev(Common):
-    """
-    The in-development settings and the default configuration.
-    """
+    REST_FRAMEWORK = {
+        'DEFAULT_AUTHENTICATION_CLASSES': [
+            'rest_framework_simplejwt.authentication.JWTAuthentication',
+        ]
 
-    DOTENV = os.path.join(Common.BASE_DIR, '.env.dev')
 
-    SWAGGER_SETTINGS = {
-        "SECURITY_DEFINITIONS": {
-            "Token": {"type": "apiKey", "name": "Authorization",
-            "in": "header"},
-            "Basic": {"type": "basic"},
-        }
+    }
+
+    SIMPLE_JWT = {
+        "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+        "REFRESH_TOKEN_LIFETIME": timedelta(days=15),
     }
 
 
-class Prod(Common):
+
+    SWAGGER_SETTINGS = {
+            "SECURITY_DEFINITIONS": {
+                "Token": {"type": "apiKey", "name": "Authorization",
+                          "in": "header"},
+                "Basic": {"type": "basic"},
+                }
+            }
+
+
+class Prod(Dev):
     """
     The in-production settings.
     """
 
-    DOTENV = os.path.join(Common.BASE_DIR, '.env.production')
+    DOTENV = os.path.join(Dev.BASE_DIR, '.env.dev')
     DEBUG = False
     TEMPLATE_DEBUG = DEBUG
 
