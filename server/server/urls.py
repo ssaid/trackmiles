@@ -4,6 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
+from django.contrib.auth import views as auth_views
 
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -25,8 +26,8 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include('flights.api.urls')),
-    path('api/v1/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/v1/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/v1/auth/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/v1/auth/refresh_token/', TokenRefreshView.as_view(), name='token_refresh'),
     re_path(
         r"^swagger(?P<format>\.json|\.yaml)$",
         schema_view.with_ui("swagger", cache_timeout=0),
