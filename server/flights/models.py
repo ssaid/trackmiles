@@ -5,8 +5,8 @@ from datetime import datetime, timedelta
 
 class Airport(models.Model):
 
-    name = models.CharField(max_length=64)
-    code = models.SlugField(max_length=10, unique=True)
+    name = models.CharField(max_length=255)
+    code = models.SlugField(max_length=10, unique=True, null=True)
     city = models.CharField(max_length=64)
     country = models.ForeignKey('Country', on_delete=models.CASCADE, related_name="airports")
     region = models.ForeignKey('Region', on_delete=models.CASCADE, related_name="airports")
@@ -15,7 +15,7 @@ class Airport(models.Model):
 class Country(models.Model):
     
     name = models.CharField(max_length=64)
-    code = models.SlugField(max_length=10, unique=True)
+    code = models.SlugField(max_length=10, unique=True, null=True)
 
 class AirLine(models.Model):
     
