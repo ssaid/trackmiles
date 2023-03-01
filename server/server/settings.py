@@ -148,12 +148,36 @@ class Dev(Configuration):
 
 
     SWAGGER_SETTINGS = {
-            "SECURITY_DEFINITIONS": {
-                "Token": {"type": "apiKey", "name": "Authorization",
-                          "in": "header"},
-                "Basic": {"type": "basic"},
-                }
+        "SECURITY_DEFINITIONS": {
+            "token": {
+                "type": "apiKey",
+                "name": "Authorization",
+                "in": "header"
+            },
+        },
+    }
+
+    LOGGING = {
+        'version': 1,
+        'filters': {
+            'require_debug_true': {
+                '()': 'django.utils.log.RequireDebugTrue',
             }
+        },
+        'handlers': {
+            'console': {
+                'level': 'DEBUG',
+                'filters': ['require_debug_true'],
+                'class': 'logging.StreamHandler',
+            }
+        },
+        'loggers': {
+            'django.db.backends': {
+                'level': 'DEBUG',
+                'handlers': ['console'],
+            }
+        }
+    }
 
 
 class Prod(Dev):
