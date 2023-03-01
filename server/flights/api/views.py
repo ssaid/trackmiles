@@ -50,11 +50,17 @@ class RegistrationView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+class UserView(APIView):
+
+    from rest_framework import permissions
+    permission_classes = [permissions.IsAuthenticated]
+
+
     def get(self, request):
+
         user = request.user
 
-        print(user)
-        print(request)
         if user.is_anonymous:
-            return Response({'mensaje': 'No estas autenticado'})
-        return Response({'mensaje': 'Hola, {}'.format(user.username)})
+            return Response({'msg': 'Not authenticated'})
+        return Response({'msg': 'Hi, {}'.format(user.username)})
