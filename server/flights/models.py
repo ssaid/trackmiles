@@ -17,6 +17,10 @@ class Country(models.Model):
     name = models.CharField(max_length=64)
     code = models.SlugField(max_length=10, unique=True, null=True)
 
+
+    def __str__(self):
+        return self.name
+
 class AirLine(models.Model):
     
     name = models.CharField(max_length=64)

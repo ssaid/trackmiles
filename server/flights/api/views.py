@@ -1,15 +1,13 @@
 from rest_framework.views import APIView, Response
-
-from rest_framework.views import APIView
+from rest_framework import permissions, generics, pagination, status, filters
 from rest_framework.response import Response
-from rest_framework import status
 from django.contrib.auth import get_user_model
 
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
-from .middlewares import CustomTokenAuthentication
-from .serializers import UserSerializer
+from .serializers import *
+from ..models import *
 
 User = get_user_model()
 
@@ -20,8 +18,6 @@ class RegistrationView(APIView):
     """
     View for user management
     """
-
-    authentication_classes = [CustomTokenAuthentication]
 
     @swagger_auto_schema(
         request_body=UserSerializer,
@@ -53,9 +49,7 @@ class RegistrationView(APIView):
 
 class UserView(APIView):
 
-    from rest_framework import permissions
     permission_classes = [permissions.IsAuthenticated]
-
 
     def get(self, request):
 
@@ -64,3 +58,37 @@ class UserView(APIView):
         if user.is_anonymous:
             return Response({'msg': 'Not authenticated'})
         return Response({'msg': 'Hi, {}'.format(user.username)})
+
+
+class RegionView(generics.ListAPIView):
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    serializer_class = RegionSerializer
+    queryset = Region.objects.all()
+
+
+class CountryView(generics.ListAPIView):
+
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = CountrySerializer
+    queryset = Country.objects.all()
+
+    pagination_class = pagination.LimitOffsetPagination
+
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name', 'code']
+
+
+
+class AirportView(generics.ListAPIView):
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    serializer_class = AirportSerializer
+    queryset = Airport.objects.all()
+
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name', 'code', 'city', 'country__name', 'region__name']
+
+    pagination_class = pagination.LimitOffsetPagination
