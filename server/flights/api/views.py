@@ -1,5 +1,5 @@
 from rest_framework.views import APIView, Response
-from rest_framework import permissions, generics, pagination, status, filters
+from rest_framework import permissions, generics, pagination, status, filters, viewsets
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 
@@ -92,3 +92,19 @@ class AirportView(generics.ListAPIView):
     search_fields = ['name', 'code', 'city', 'country__name', 'region__name']
 
     pagination_class = pagination.LimitOffsetPagination
+
+
+
+class PreferenceViewSet(viewsets.ModelViewSet):
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    serializer_class = PreferenceSerializer
+    queryset = Preference.objects.all()
+
+    def get_queryset(self):
+        return Preference.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+

@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from flights.models import Airport, Country, Region
+from flights.models import Airport, Country, Preference, Region
 
 User = get_user_model()
 
@@ -41,3 +41,36 @@ class AirportSerializer(serializers.ModelSerializer):
         fields = [ 'id', 'name', 'code', 'city', 'country' ]
 
 
+
+class PreferenceSerializer(serializers.ModelSerializer):
+
+
+    region_destination_name = serializers.CharField(source='region_destination.name', read_only=True)
+    region_origin_name = serializers.CharField(source='region_origin.name', read_only=True)
+    airport_origin_name = serializers.CharField(source='airport_origin.name', read_only=True)
+    airport_destination_name = serializers.CharField(source='airport_destination.name', read_only=True)
+    country_origin_name = serializers.CharField(source='country_origin.name', read_only=True)
+    country_destination_name = serializers.CharField(source='country_destination.name', read_only=True)
+
+
+    def validate(self, data):
+
+        origin_fields = ( 'region_origin', 'airport_origin', 'country_origin' )
+        destination_fields = ( 'region_destination', 'airport_destination', 'country_destination' )
+
+        num_origin_fields = sum([field in data for field in origin_fields])
+        num_destination_fields = sum([field in data for field in destination_fields])
+
+        if num_origin_fields != 1:
+            raise serializers.ValidationError('You must provide one origin field.')
+        if num_destination_fields != 1:
+            raise serializers.ValidationError('You must provide one destination field.')
+
+        validated_data = super().validate(data)
+
+        return validated_data
+
+
+    class Meta:
+        model = Preference
+        exclude = ['user']
