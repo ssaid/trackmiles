@@ -8,8 +8,8 @@ class Airport(models.Model):
     name = models.CharField(max_length=255)
     code = models.SlugField(max_length=10, unique=True, null=True)
     city = models.CharField(max_length=64)
-    country = models.ForeignKey('Country', on_delete=models.CASCADE, related_name="airports")
-    region = models.ForeignKey('Region', on_delete=models.CASCADE, related_name="airports")
+    country = models.ForeignKey('Country', on_delete=models.CASCADE, related_name="airports", null=True)
+    region = models.ForeignKey('Region', on_delete=models.CASCADE, related_name="airports", null=True)
 
 
 class Country(models.Model):
