@@ -37,4 +37,6 @@ def populate_airports():
 
             data.append(airport)
 
+    Airport.objects.bulk_create(data)
+
     return len(data)
