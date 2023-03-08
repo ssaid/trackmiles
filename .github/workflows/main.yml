@@ -29,4 +29,4 @@ jobs:
 
     - name: Deploy
       run: |
-        ssh -o StrictHostKeyChecking=no -i deploy_key -p ${{ env.SERVER_PORT }} ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} "cd TrackMiles && docker compose down && git pull && docker compose up -d --build --force-recreate"
+        ssh -o StrictHostKeyChecking=no -i deploy_key -p ${{ env.SERVER_PORT }} ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} "cd TrackMiles && docker compose -f docker-compose.test.yml down && git pull && docker compose -f docker-compose.test.yml up -d --build --force-recreate"
