@@ -18,6 +18,7 @@ schema_view = get_schema_view(
     openapi.Info(
         title="TrackMiles API",
         default_version="v1",
+        url='https://backend-trackmiles.ovh001.eynes.com.ar/api/v1/', # FIXME [ssaid@08/03/2023]: Maybe in localhost this is unwanted?
         description="API for TrackMiles App",
     ),
     public=True,
