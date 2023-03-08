@@ -8,8 +8,14 @@ def populate_airports():
         reader = csv.DictReader(csvfile)
         for row in reader:
 
-            country = Country.objects.get(name=row['country'])
+            try:
+                country = Country.objects.get(name=row['country'])
+
+            except Country.DoesNotExist:
+                country = None
+
             region = None
+
             if row['region'] != r'\N':
                 region, _ = Region.objects.get_or_create(name=row['region'].split('/')[0])
 
@@ -20,7 +26,4 @@ def populate_airports():
 
             data.append(airport)
 
-
-    Airport.objects.bulk_create(data)
     return len(data)
-
