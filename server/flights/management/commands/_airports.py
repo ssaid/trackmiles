@@ -2,6 +2,7 @@ import csv
 from ...models import Airport, Region, Country
 
 
+
 def populate_airports():
     data = []
     country_cache = {}
@@ -32,7 +33,8 @@ def populate_airports():
 
             airport = Airport(
                     name=row['name'], code=row['code'] if row['code'] != r'\N' else None,
-                    city=row['city'], country=country, region=region
+                    city=row['city'], country=country, region=region, display_name=row['display_name'],
+                    display_name_long=row['display_name_long']
                 )
 
             data.append(airport)

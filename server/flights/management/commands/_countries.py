@@ -7,7 +7,7 @@ def populate_countries():
     with open('flights/data/countries.csv', newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-            country = Country(name=row['name'], code=row['iso3'])
+            country = Country(name=row['nombre'], code=row['iso3'])
             data.append(country)
 
     Country.objects.bulk_create(data)

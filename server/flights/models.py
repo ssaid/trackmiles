@@ -11,6 +11,8 @@ class Airport(models.Model):
     country = models.ForeignKey('Country', on_delete=models.CASCADE, related_name="airports", null=True)
     region = models.ForeignKey('Region', on_delete=models.CASCADE, related_name="airports", null=True)
 
+    display_name = models.CharField(max_length=255)
+    display_name_long = models.CharField(max_length=255)
 
 class Country(models.Model):
     
@@ -37,41 +39,55 @@ class Flight(models.Model):
     airport_origin = models.ForeignKey(Airport, on_delete=models.CASCADE, related_name="flight_outgoing")
     airport_destination = models.ForeignKey(Airport, on_delete=models.CASCADE, related_name="flights_incoming")
 
-    external_link = models.URLField()
-
     updated_at = models.DateTimeField(auto_now=True)
 
 
     def get_avg_last_six_months(self):
         delta_date = datetime.now() - timedelta(days=180)
-        return self.costs.filter(date__gte=delta_date).aggregate(models.Avg('cost'))['cost__avg']
+
+        return self.costs.filter(flight_date__gte=delta_date).aggregate(models.Avg('cost'))['cost__avg']
 
 
     def get_avg_last_three_months(self):
         delta_date = datetime.now() - timedelta(days=90)
-        return self.costs.filter(date__gte=delta_date).aggregate(models.Avg('cost'))['cost__avg']
-
+        return self.costs.filter(flight_date__gte=delta_date, ).aggregate(models.Avg('cost'))['cost__avg']
 
     def get_avg_last_month(self):
         delta_date = datetime.now() - timedelta(days=30)
-        return self.costs.filter(date__gte=delta_date).aggregate(models.Avg('cost'))['cost__avg']
+        return self.costs.filter(flight_date__gte=delta_date).aggregate(models.Avg('cost'))['cost__avg']
+
+    def get_best_price_by_money(self):
+        return self.costs.filter(flight_date__gte=datetime.now()).order_by('history__money').first()
 
 
+    def get_best_price_by_miles(self):
+        return self.costs.filter(flight_date__gte=datetime.now()).order_by('history__miles').first()
 
-class FlightCost(models.Model):
+
+class FlightDetail(models.Model):
 
     flight = models.ForeignKey(Flight, on_delete=models.CASCADE, related_name="costs")
     airline = models.ForeignKey(AirLine, on_delete=models.CASCADE, related_name="flight_costs")
 
-    money = models.FloatField()
-    miles = models.PositiveIntegerField()
+    flight_date = models.DateField(null=False, blank=False)
+
+    external_link = models.URLField()
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ['-flight_date']
 
+
+class FlightHistory(models.Model):
+
+    detail = models.ForeignKey(FlightDetail, on_delete=models.CASCADE, related_name="history")
+
+    money = models.FloatField()
+    miles = models.PositiveIntegerField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 class User(AbstractUser):
@@ -90,14 +106,17 @@ class Preference(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="preferences")
 
-    region_destination = models.ForeignKey(Region, on_delete=models.CASCADE, related_name="users_destination", null=True)
     region_origin = models.ForeignKey(Region, on_delete=models.CASCADE, related_name="users_origin", null=True)
+    region_destination = models.ForeignKey(Region, on_delete=models.CASCADE, related_name="users_destination", null=True)
 
     airport_origin = models.ForeignKey(Airport, on_delete=models.CASCADE, related_name="users_origin", null=True)
     airport_destination = models.ForeignKey(Airport, on_delete=models.CASCADE, related_name="users_destination", null=True)
 
     country_origin = models.ForeignKey(Country, on_delete=models.CASCADE, related_name="users_origin", null=True)
     country_destination = models.ForeignKey(Country, on_delete=models.CASCADE, related_name="users_destination", null=True)
+
+    date_from = models.DateField(null=True, blank=True)
+    date_to = models.DateField(null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -115,6 +134,8 @@ class Suscriptions(models.Model):
     due = models.DateField(default=default_due_date)
     payment_id = models.SlugField(unique=True, blank=True, null=True)
 
+    product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name="suscriptions")
+
 
 
 class Product(models.Model):
@@ -122,7 +143,6 @@ class Product(models.Model):
     name = models.CharField(max_length=64)
     price = models.FloatField()
     description = models.TextField()
-    suscription = models.ForeignKey(Suscriptions, on_delete=models.CASCADE, related_name="products")
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
