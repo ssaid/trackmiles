@@ -15,7 +15,7 @@ class Airport(models.Model):
     display_name_long = models.CharField(max_length=255)
 
 class Country(models.Model):
-    
+
     name = models.CharField(max_length=64)
     code = models.SlugField(max_length=10, unique=True, null=True)
 
@@ -24,7 +24,7 @@ class Country(models.Model):
         return self.name
 
 class AirLine(models.Model):
-    
+
     name = models.CharField(max_length=64)
     code = models.SlugField(max_length=10, unique=True)
 
@@ -66,8 +66,7 @@ class Flight(models.Model):
 
 class FlightDetail(models.Model):
 
-    flight = models.ForeignKey(Flight, on_delete=models.CASCADE, related_name="costs")
-    airline = models.ForeignKey(AirLine, on_delete=models.CASCADE, related_name="flight_costs")
+    flight = models.ForeignKey(Flight, on_delete=models.CASCADE, related_name="details")
 
     flight_date = models.DateField(null=False, blank=False)
 
@@ -82,12 +81,16 @@ class FlightDetail(models.Model):
 
 class FlightHistory(models.Model):
 
-    detail = models.ForeignKey(FlightDetail, on_delete=models.CASCADE, related_name="history")
+    detail = models.ForeignKey(FlightDetail, on_delete=models.PROTECT, related_name="history")
+    airline = models.ForeignKey(AirLine, on_delete=models.PROTECT)
 
     money = models.FloatField()
     miles = models.PositiveIntegerField()
 
     created_at = models.DateTimeField(auto_now_add=True)
+
+# In: [originAirportCode, destinationAirportCode]
+# Ou: [{Airline={'name', 'code'}, departureDate, BestPriceMiles, BestPriceMoney, Url},{}...]
 
 
 class User(AbstractUser):
