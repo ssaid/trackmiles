@@ -96,10 +96,12 @@ class User(AbstractUser):
 
     flights = models.ManyToManyField(Flight, related_name="users")
 
+    username = models.CharField(max_length=255, unique=True, null=True)
+
     email = models.EmailField(unique=True)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['username']
 
 
 class Preference(models.Model):

@@ -24,6 +24,7 @@ services:
       - ./server/:/app/
     depends_on:
     - db
+    - redis
     - wdb
     environment:
       WDB_SOCKET_SERVER: wdb
@@ -64,6 +65,10 @@ services:
   #   entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
   # debugger
+  redis:
+    image: redis:7-alpine
+    ports:
+      - 6379:6379
   wdb:
     image: kozea/wdb
     ports:

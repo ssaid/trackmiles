@@ -40,6 +40,9 @@ class Dev(Configuration):
         'drf_yasg',
         'corsheaders',
         'flights',
+        'celery',
+        'django_celery_results',
+        'django_celery_beat',
     ]
 
     MIDDLEWARE = [
@@ -178,6 +181,9 @@ class Dev(Configuration):
             }
         }
     }
+
+    CELERY_RESULT_BACKEND = values.Value()
+    CELERY_BROKER_URL = values.Value()
 
 
 class Prod(Dev):
