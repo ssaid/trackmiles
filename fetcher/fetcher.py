@@ -2,6 +2,8 @@ from datetime import datetime, date, timedelta
 import concurrent.futures
 import requests
 import jq
+import traceback
+import time
 
 
 def gen_tasks(afrom='EZE', adest='MEX'):
@@ -29,15 +31,35 @@ def make_api_request(data):
     method = ddata['method']
     headers = ddata['headers']
     payload = ddata['payload']
-    # Make the API request
-    print('Requesting...')
-    response = requests.request(method, url, headers=headers, json=payload)
 
-    response_json = response.json()
+    # Make the API request
+    print(f"Requesting [{data['originAirportCode']}->{data['destinationAirportCode']}] @ {data['departureDate']}")
+    done = False
+    retry = 0
+    max_retry = 3
+    while not done and retry < max_retry:
+        try:
+            response = requests.request(method, url, headers=headers, json=payload)
+            response.raise_for_status()
+            response_json = response.json()
+        except Exception:
+            traceback.print_exc()
+            print(f'Retrying #{retry + 1}/{max_retry}')
+            time.sleep(5)
+            retry += 1
+        else:
+            done = True
+
+    if not done:
+        print('Max Retries exceeded, returning empty')
+        return {}
+
     try:
         price = jq.jq('.requestedFlightSegmentList[].bestPricing.miles').transform(response_json)
     except Exception:
-        print('Retying... due to unability to parse response.')
+        print('Unable to parse response...')
+        return {}
+
     dd = {
         'originAirportCode': data['originAirportCode'],
         'destinationAirportCode': data['destinationAirportCode'],
@@ -69,21 +91,25 @@ def queue_processor(queue=[]):
     # Create a thread or process pool based on the number of requests you want to perform in parallel
     # By default, the ThreadPoolExecutor is used for threads, and ProcessPoolExecutor for processes.
     # You can specify the number of workers as an argument to the executor (e.g., max_workers=5)
-    executor = concurrent.futures.ThreadPoolExecutor(max_workers=10)
+    executor = concurrent.futures.ThreadPoolExecutor(max_workers=33)
 
-    print('sending requests ...')
     # Submit API requests to the executor
     futures = [executor.submit(make_api_request, data) for data in queue]
 
-    # Retrieve the results of the completed requests
-    print('waiting results...')
+    # Retrieve the results of the completed requests locked until all futures are completed
     results = [future.result() for future in concurrent.futures.as_completed(futures)]
-    print('sorting results...')
-    import pprint; pprint.pprint(results)
-    sorted_prices = sorted(results, key=lambda x: x.get('best_price', 1000000))
 
-    print('best price...')
-    print(sorted_prices[0])
+    # Filter results to exclude empty dicts
+    results = filter(None, results)
+    results = filter(lambda x: x.get('best_price'), results)
+    print(f'Requests: #{len(futures)}')
+
+    sorted_prices = sorted(results, key=lambda x: x.get('best_price', 1000000))
+    print(f'Responss: #{len(sorted_prices)}')
+
+    print('Get the best price...')
+    if sorted_prices:
+        print(sorted_prices[0])
     # # Process the results
     # for result in results:
     #     # Handle each API response as desired
