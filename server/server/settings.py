@@ -175,10 +175,10 @@ class Dev(Configuration):
             }
         },
         'loggers': {
-            'django.db.backends': {
-                'level': 'DEBUG',
-                'handlers': ['console'],
-            }
+            # 'django.db.backends': {
+            #     'level': 'DEBUG',
+            #     'handlers': ['console'],
+            # }
         }
     }
 

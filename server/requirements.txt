@@ -61,3 +61,4 @@ celery
 django-celery-results
 django-celery-beat
 redis
+flower

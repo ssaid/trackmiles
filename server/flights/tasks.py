@@ -3,7 +3,9 @@ from celery import shared_task
 
 
 @shared_task
-def say_hello(origin, destination):
+def say_hello():
+    import time
+    time.sleep(30)
     print("Hello there!")
 
 
