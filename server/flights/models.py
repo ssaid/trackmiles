@@ -36,10 +36,18 @@ class Region(models.Model):
 
 class Flight(models.Model):
 
-    airport_origin = models.ForeignKey(Airport, on_delete=models.CASCADE, related_name="flight_outgoing")
-    airport_destination = models.ForeignKey(Airport, on_delete=models.CASCADE, related_name="flights_incoming")
+    airport_origin = models.ForeignKey(Airport, on_delete=models.PROTECT, related_name="flight_outgoing")
+    airport_destination = models.ForeignKey(Airport, on_delete=models.PROTECT, related_name="flights_incoming")
 
+    flight_date = models.DateField(null=False, blank=False)
+
+    external_link = models.URLField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-flight_date']
 
 
     def get_avg_last_six_months(self):
@@ -64,33 +72,16 @@ class Flight(models.Model):
         return self.costs.filter(flight_date__gte=datetime.now()).order_by('history__miles').first()
 
 
-class FlightDetail(models.Model):
-
-    flight = models.ForeignKey(Flight, on_delete=models.CASCADE, related_name="details")
-
-    flight_date = models.DateField(null=False, blank=False)
-
-    external_link = models.URLField()
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        ordering = ['-flight_date']
-
 
 class FlightHistory(models.Model):
 
-    detail = models.ForeignKey(FlightDetail, on_delete=models.PROTECT, related_name="history")
+    flight = models.ForeignKey(Flight, on_delete=models.PROTECT, related_name="history")
     airline = models.ForeignKey(AirLine, on_delete=models.PROTECT)
 
     money = models.FloatField()
     miles = models.PositiveIntegerField()
 
     created_at = models.DateTimeField(auto_now_add=True)
-
-# In: [originAirportCode, destinationAirportCode]
-# Ou: [{Airline={'name', 'code'}, departureDate, BestPriceMiles, BestPriceMoney, Url},{}...]
 
 
 class User(AbstractUser):

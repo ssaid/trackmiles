@@ -1,7 +1,12 @@
 from celery import shared_task
-from .models import Flight, FlightDetail, FlightHistory, AirLine, Airport
+from datetime import datetime
+import logging
+
+from .models import Flight,FlightHistory, AirLine, Airport
 from .fetcher import start
 
+
+logger = logging.getLogger(__name__)
 
 @shared_task
 def say_hello():
@@ -12,25 +17,42 @@ def say_hello():
 
 @shared_task
 def process_costs(origin, dest):
-    res = start(origin, dest)
-    # origin_airport_code = res['airport_origin']['code'].upper().strip()
-    # origin_airport_name = res['airport_origin']['name'].capitalize().strip()
-    # destin_airport_code = res['airport_destin']['code'].upper().strip()
-    # destin_airport_name = res['airport_destin']['name'].capitalize().strip()
-    origin_airport = Airport.objects.get(code=origin)
-    destin_airport = Airport.objects.get(code=dest)
-    flight = Flight.objects.get_or_create(airport_origin = origin_airport, airport_destination = destin_airport)
-    history_flights = []
-    for data in res:
-        fd = FlightDetail.objects.get_or_create(flight_id=flight.pk, flight_date=data['departureDate'])
 
-        airline = data['airline']
-        airline_code= airline.get('code').strip().upper()
-        airline_name= airline.get('name').strip().capitalize()
+    try:
 
-        airline_o = AirLine.objects.get_or_create(code=airline_code, defaults={'name': airline_name})
-        h = FlightHistory(money=data['money'], miles=data['miles'], airline=airline_o, detail=fd)
+        logger.info("Processing costs for %s to %s" % (origin, dest))
 
-        history_flights.append(h)
+        res = start(origin, dest)
+        origin_airport = Airport.objects.get(code=origin)
+        destin_airport = Airport.objects.get(code=dest)
+        history_flights = []
+        for data in res:
 
-    FlightHistory.objects.bulk_create(history_flights)
+            logger.debug("Processing [%s -> %s] - %s" % (origin, dest, data['departureDate']))
+
+            flight = Flight.objects.get_or_create(
+                    airport_origin = origin_airport,
+                    airport_destination = destin_airport,
+                    flight_date = datetime.strptime(data['departureDate'], '%d/%m/%Y')
+                    )
+
+            airline = data['airline']
+            airline_code = airline.get('code').strip().upper()
+            airline_name = airline.get('name').strip().capitalize()
+
+            airline_o = AirLine.objects.get_or_create(
+                    code=airline_code,
+                    defaults={'name': airline_name}
+                    )
+
+            h = FlightHistory(money=data['money'], miles=data['miles'], airline=airline_o, flight=flight)
+
+            history_flights.append(h)
+
+        logger.info("Bulking into FlightHistory %s regiters" % (len(history_flights)))
+        FlightHistory.objects.bulk_create(history_flights)
+
+    except Exception as e:
+        logger.error("Error processing costs for %s to %s" % (origin, dest))
+        logger.error(e)
+        raise e
