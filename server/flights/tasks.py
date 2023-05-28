@@ -1,5 +1,6 @@
 from celery import shared_task
-from .models import Flight, FlightDetail, FlightHistory, AirLine
+from .models import Flight, FlightDetail, FlightHistory, AirLine, Airport
+from .fetcher import start
 
 
 @shared_task
@@ -11,9 +12,14 @@ def say_hello():
 
 @shared_task
 def process_costs(origin, dest):
-    # res = fetcher(origin, dest)
-    res = []
-    flight = Flight.objects.get_or_create(airport_origin__code = origin, airport_destination__code = dest)
+    res = start(origin, dest)
+    # origin_airport_code = res['airport_origin']['code'].upper().strip()
+    # origin_airport_name = res['airport_origin']['name'].capitalize().strip()
+    # destin_airport_code = res['airport_destin']['code'].upper().strip()
+    # destin_airport_name = res['airport_destin']['name'].capitalize().strip()
+    origin_airport = Airport.objects.get(code=origin)
+    destin_airport = Airport.objects.get(code=dest)
+    flight = Flight.objects.get_or_create(airport_origin = origin_airport, airport_destination = destin_airport)
     history_flights = []
     for data in res:
         fd = FlightDetail.objects.get_or_create(flight_id=flight.pk, flight_date=data['departureDate'])
