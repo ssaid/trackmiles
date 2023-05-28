@@ -5,6 +5,7 @@ from django.utils.timezone import make_aware
 import pytz
 from flights.models import Airport
 import datetime
+import json
 
 class Command(BaseCommand):
     help = 'Create schedules for flights'
@@ -43,7 +44,7 @@ class Command(BaseCommand):
                     task="flights.tasks.process_costs",
                     start_time=time_aware,
                     interval=day_schedule,
-                    kwargs={"origin": o.code, "dest": d.code},
+                    kwargs=json.dumps({"origin": o.code, "dest": d.code}),
                     )
 
                 time += i_between_schedules
