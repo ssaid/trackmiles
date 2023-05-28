@@ -19,7 +19,6 @@ def say_hello():
 def process_costs(origin, dest):
 
     try:
-
         logger.info("Processing costs for %s to %s" % (origin, dest))
 
         res = start(origin, dest)
@@ -30,22 +29,25 @@ def process_costs(origin, dest):
 
             logger.debug("Processing [%s -> %s] - %s" % (origin, dest, data['departureDate']))
 
-            flight = Flight.objects.get_or_create(
+            flight, _ = Flight.objects.get_or_create(
                     airport_origin = origin_airport,
                     airport_destination = destin_airport,
-                    flight_date = datetime.strptime(data['departureDate'], '%d/%m/%Y')
+                    flight_date = datetime.strptime(data['departureDate'], '%Y-%m-%d')
                     )
+
+            flight.external_link = ""
+            flight.save()
 
             airline = data['airline']
             airline_code = airline.get('code').strip().upper()
             airline_name = airline.get('name').strip().capitalize()
 
-            airline_o = AirLine.objects.get_or_create(
+            airline_o, _ = AirLine.objects.get_or_create(
                     code=airline_code,
                     defaults={'name': airline_name}
                     )
 
-            h = FlightHistory(money=data['money'], miles=data['miles'], airline=airline_o, flight=flight)
+            h = FlightHistory(money=data['BestPriceMoney'], miles=data['BestPriceMiles'], airline=airline_o, flight=flight)
 
             history_flights.append(h)
 
