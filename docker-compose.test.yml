@@ -36,6 +36,7 @@ services:
       - "traefik.http.routers.backend.tls.certresolver=le"
     depends_on:
     - db
+    - redis
     - wdb
     environment:
       WDB_SOCKET_SERVER: wdb
@@ -78,6 +79,38 @@ services:
   #   entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
   # debugger
+  celery:
+    build: ./server
+    command: "celery -A server worker -l INFO -E"
+
+    depends_on:
+      - server
+    env_file:
+      - ./server/.env.dev
+
+  celery-beats:
+    build: ./server
+    command: "celery -A server beat --scheduler django_celery_beat.schedulers:DatabaseScheduler"
+    depends_on:
+      - db
+      - server
+      - celery
+    env_file:
+      - ./server/.env.dev
+
+
+  flower:
+    build: ./server
+    command: "celery -A server flower --address=0.0.0.0 --port=5555"
+    ports:
+      - "5555:5555"
+    depends_on:
+      - celery
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - 6379:6379
   wdb:
     image: kozea/wdb
     ports:
