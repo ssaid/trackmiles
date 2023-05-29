@@ -1,18 +1,26 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from datetime import datetime, timedelta
+from itertools import product
 
 
 class Airport(models.Model):
 
+
     name = models.CharField(max_length=255)
     code = models.SlugField(max_length=10, unique=True, null=True)
     city = models.CharField(max_length=64)
-    country = models.ForeignKey('Country', on_delete=models.CASCADE, related_name="airports", null=True)
-    region = models.ForeignKey('Region', on_delete=models.CASCADE, related_name="airports", null=True)
+    country = models.ForeignKey('Country', on_delete=models.PROTECT, related_name="airports", null=True)
+    region = models.ForeignKey('Region', on_delete=models.SET_NULL, related_name="airports", null=True)
 
     display_name = models.CharField(max_length=255)
     display_name_long = models.CharField(max_length=255)
+
+    class Meta:
+        ordering = ['country__name', 'name']
+
+    def __str__(self):
+        return '[%s] %s' % (self.country and self.country.code or '-', self.code)
 
 class Country(models.Model):
 
@@ -102,20 +110,59 @@ class Preference(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="preferences")
 
-    region_origin = models.ForeignKey(Region, on_delete=models.CASCADE, related_name="users_origin", null=True)
-    region_destination = models.ForeignKey(Region, on_delete=models.CASCADE, related_name="users_destination", null=True)
+    region_origin = models.ForeignKey(Region, on_delete=models.CASCADE, related_name="users_origin", null=True, blank=True)
+    region_destination = models.ForeignKey(Region, on_delete=models.CASCADE, related_name="users_destination", null=True, blank=True)
 
-    airport_origin = models.ForeignKey(Airport, on_delete=models.CASCADE, related_name="users_origin", null=True)
-    airport_destination = models.ForeignKey(Airport, on_delete=models.CASCADE, related_name="users_destination", null=True)
+    airport_origin = models.ForeignKey(Airport, on_delete=models.CASCADE, related_name="users_origin", null=True, blank=True)
+    airport_destination = models.ForeignKey(Airport, on_delete=models.CASCADE, related_name="users_destination", null=True, blank=True)
 
-    country_origin = models.ForeignKey(Country, on_delete=models.CASCADE, related_name="users_origin", null=True)
-    country_destination = models.ForeignKey(Country, on_delete=models.CASCADE, related_name="users_destination", null=True)
+    country_origin = models.ForeignKey(Country, on_delete=models.CASCADE, related_name="users_origin", null=True, blank=True)
+    country_destination = models.ForeignKey(Country, on_delete=models.CASCADE, related_name="users_destination", null=True, blank=True)
 
     date_from = models.DateField(null=True, blank=True)
     date_to = models.DateField(null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def get_routes(self):
+        """ <- set(('eze','mex'),('eze','cun'))"""
+        a_fr = []
+        a_to = []
+        # origin
+        if self.airport_origin:
+            a_fr.append(self.airport_origin.code)
+        if self.region_origin:
+            a_fr.append(map(lambda x: x.code), self.region_origin.airports)
+        if self.country_origin:
+            a_fr.append(map(lambda x: x.code), self.country_origin.airports)
+        # destination
+        if self.airport_destination:
+            a_to.append(self.airport_destination.code)
+        if self.region_destination:
+            a_to.append(map(lambda x: x.code), self.region_destination.airports)
+        if self.country_destination:
+            a_to.append(map(lambda x: x.code), self.country_destination.airports)
+
+        res = set(product(a_fr, a_to))
+
+        return res
+
+
+    def get_all_airports_origin():
+        by_country = {a.code for a in Airport.objects.filter(country__users_origin__isnull=False).order_by('code').distinct('code')}
+        by_regionn = {a.code for a in Airport.objects.filter(region__users_origin__isnull=False).order_by('code').distinct('code')}
+        by_airport = {a.code for a in Airport.objects.filter(users_origin__isnull=False).order_by('code').distinct('code')}
+        res = by_country | by_regionn | by_airport
+        return res
+
+    @staticmethod
+    def get_all_airports_destination():
+        by_country = {a.code for a in Airport.objects.filter(country__users_destination__isnull=False).order_by('code').distinct('code')}
+        by_regionn = {a.code for a in Airport.objects.filter(region__users_destination__isnull=False).order_by('code').distinct('code')}
+        by_airport = {a.code for a in Airport.objects.filter(users_destination__isnull=False).order_by('code').distinct('code')}
+        res = by_country | by_regionn | by_airport
+        return res
 
 
 
@@ -124,14 +171,13 @@ class Suscriptions(models.Model):
     def default_due_date(self):
         return datetime.now() + timedelta(days=30)
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="suscriptions")
+    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name="suscriptions")
     price = models.FloatField()
     date = models.DateField(auto_now_add=True)
     due = models.DateField(default=default_due_date)
     payment_id = models.SlugField(unique=True, blank=True, null=True)
 
-    product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name="suscriptions")
-
+    product = models.ForeignKey('Product', on_delete=models.PROTECT, related_name="suscriptions")
 
 
 class Product(models.Model):
@@ -139,6 +185,7 @@ class Product(models.Model):
     name = models.CharField(max_length=64)
     price = models.FloatField()
     description = models.TextField()
+    active = models.BooleanField(default=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -24,12 +24,12 @@ def populate_airports():
 
             region = None
 
-            if row['region'] in region_cache:
-                region = region_cache[row['region']]
-            else:
-                if row['region'] != r'\N':
-                    region, _ = Region.objects.get_or_create(name=row['region'].split('/')[0])
-                    region_cache[row['region']] = region
+            # if row['region'] in region_cache:
+            #     region = region_cache[row['region']]
+            # else:
+            #     if row['region'] != r'\N':
+            #         region, _ = Region.objects.get_or_create(name=row['region'].split('/')[0])
+            #         region_cache[row['region']] = region
 
             airport = Airport(
                     name=row['name'], code=row['code'] if row['code'] != r'\N' else None,
