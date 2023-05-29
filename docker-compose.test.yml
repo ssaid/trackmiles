@@ -87,11 +87,11 @@ services:
       - "traefik"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.backend.rule=Host(`flower-trackmiles.ovh001.eynes.com.ar`)"
-      - "traefik.http.routers.backend.entrypoints=websecure"
-      - "traefik.http.services.backend.loadbalancer.server.port=5555"
-      - "traefik.http.routers.backend.tls=true"
-      - "traefik.http.routers.backend.tls.certresolver=le"
+      - "traefik.http.routers.flower.rule=Host(`flower-trackmiles.ovh001.eynes.com.ar`)"
+      - "traefik.http.routers.flower.entrypoints=websecure"
+      - "traefik.http.services.flower.loadbalancer.server.port=5555"
+      - "traefik.http.routers.flower.tls=true"
+      - "traefik.http.routers.flower.tls.certresolver=le"
 
   redis:
     image: redis:7-alpine
