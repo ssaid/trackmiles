@@ -133,35 +133,19 @@ class Preference(models.Model):
         if self.airport_origin:
             a_fr.append(self.airport_origin.code)
         if self.region_origin:
-            a_fr.append(map(lambda x: x.code), self.region_origin.airports)
+            a_fr += list(map(lambda x: x.code, self.region_origin.airports.all()))
         if self.country_origin:
-            a_fr.append(map(lambda x: x.code), self.country_origin.airports)
+            a_fr += list(map(lambda x: x.code, self.country_origin.airports.all()))
         # destination
         if self.airport_destination:
             a_to.append(self.airport_destination.code)
         if self.region_destination:
-            a_to.append(map(lambda x: x.code), self.region_destination.airports)
+            a_to += list(map(lambda x: x.code, self.region_destination.airports.all()))
         if self.country_destination:
-            a_to.append(map(lambda x: x.code), self.country_destination.airports)
+            a_to += list(map(lambda x: x.code, self.country_destination.airports.all()))
 
         res = set(product(a_fr, a_to))
 
-        return res
-
-
-    def get_all_airports_origin():
-        by_country = {a.code for a in Airport.objects.filter(country__users_origin__isnull=False).order_by('code').distinct('code')}
-        by_regionn = {a.code for a in Airport.objects.filter(region__users_origin__isnull=False).order_by('code').distinct('code')}
-        by_airport = {a.code for a in Airport.objects.filter(users_origin__isnull=False).order_by('code').distinct('code')}
-        res = by_country | by_regionn | by_airport
-        return res
-
-    @staticmethod
-    def get_all_airports_destination():
-        by_country = {a.code for a in Airport.objects.filter(country__users_destination__isnull=False).order_by('code').distinct('code')}
-        by_regionn = {a.code for a in Airport.objects.filter(region__users_destination__isnull=False).order_by('code').distinct('code')}
-        by_airport = {a.code for a in Airport.objects.filter(users_destination__isnull=False).order_by('code').distinct('code')}
-        res = by_country | by_regionn | by_airport
         return res
 
 
