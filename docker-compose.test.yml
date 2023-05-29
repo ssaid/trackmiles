@@ -55,29 +55,6 @@ services:
     networks:
       - "traefik"
 
-  # proxy
-  #  proxy:
-  #    image: nginx
-  #    ports:
-  #      - "80:80"
-  #    volumes:
-  #      - ./data/nginx:/etc/nginx/conf.d
-  #      # - ./data/www:/var/www/
-  #      # - ./data/certbot/conf:/etc/letsencrypt
-  #      # - ./data/certbot/www:/var/www/certbot
-  #    links:
-  #      - server
-  #      - client
-  #   command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
-
-  # SSL certs
-  # certbot:
-  #   image: certbot/certbot
-  #   volumes:
-  #     - ./data/certbot/conf:/etc/letsencrypt
-  #     - ./data/certbot/www:/var/www/certbot
-  #   entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-
   # debugger
   celery:
     build: ./server
@@ -102,10 +79,19 @@ services:
   flower:
     build: ./server
     command: "celery -A server flower --address=0.0.0.0 --port=5555"
-    ports:
-      - "5555:5555"
+    # ports:
+    #   - "5555:5555"
     depends_on:
       - celery
+    networks:
+      - "traefik"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=Host(`flower-trackmiles.ovh001.eynes.com.ar`)"
+      - "traefik.http.routers.backend.entrypoints=websecure"
+      - "traefik.http.services.backend.loadbalancer.server.port=5555"
+      - "traefik.http.routers.backend.tls=true"
+      - "traefik.http.routers.backend.tls.certresolver=le"
 
   redis:
     image: redis:7-alpine
