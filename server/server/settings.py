@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 class Dev(Configuration):
-    
+
     # Build paths inside the project like this: BASE_DIR / 'subdir'.
     BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,6 +25,8 @@ class Dev(Configuration):
     ALLOWED_HOSTS = values.ListValue([], separator=';')
 
     CORS_ALLOWED_ORIGINS = values.ListValue([], separator=';')
+    CORS_TRUSTED_ORIGINS = values.ListValue([], separator=';')
+    CORS_ORIGIN_WHITELIST = values.ListValue([], separator=';')
 
     # Application definition
 
