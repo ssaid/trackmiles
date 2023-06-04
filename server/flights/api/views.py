@@ -108,3 +108,7 @@ class PreferenceViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+
+class WaitingListView(generics.CreateAPIView):
+
+    serializer_class = WaitingListSerializer

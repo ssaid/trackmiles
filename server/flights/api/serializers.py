@@ -1,7 +1,8 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
 
-from flights.models import Airport, Country, Preference, Region
+from flights.models import Airport, Country, Preference, Region, WaitingList
 
 User = get_user_model()
 
@@ -74,3 +75,20 @@ class PreferenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Preference
         exclude = ['user']
+
+class WaitingListSerializer(serializers.ModelSerializer):
+
+    email = serializers.EmailField(
+        validators=[
+            UniqueValidator(
+                queryset=WaitingList.objects.all(),
+                message='El email ya está registrado en el newsletter.'
+            )
+        ]
+    )
+
+
+
+    class Meta:
+        model = WaitingList
+        fields = '__all__'
