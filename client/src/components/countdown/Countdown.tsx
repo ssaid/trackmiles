@@ -5,7 +5,8 @@ import { TimeBox } from './TimeBox';
 
 export const Countdown = () => {
 
-  const { days, hours, minutes, seconds } = useCountdown(new Date('2023-07-01'));
+  const release = import.meta.env.VITE_RELEASE_DATE ?? '2023-07-01'
+  const { days, hours, minutes, seconds } = useCountdown(new Date(release));
 	const [isSent, setIsSent] = useState(false)
   const [error, setError] = useState<string | null >(null)
 
