@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import ReactGA from 'react-ga';
 import bgImage from './assets/bg.jpg'
 import { Countdown } from './components/countdown/Countdown'
@@ -5,11 +6,13 @@ import { Countdown } from './components/countdown/Countdown'
 function App() {
 
   const analytics = import.meta.env.VITE_GOOGLE_ANALYTICS_ID ?? false
-  if (analytics){ 
-    ReactGA.initialize(analytics);
-    ReactGA.pageview(window.location.pathname + window.location.search);
-  }
-  
+
+  useEffect(() => {
+    if (analytics){ 
+      ReactGA.initialize(analytics);
+      ReactGA.pageview(window.location.pathname + window.location.search);
+    }
+  }, [])
 
   return (
 
