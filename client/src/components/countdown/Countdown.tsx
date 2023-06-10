@@ -35,7 +35,7 @@ export const Countdown = () => {
       </div>
       {
         isSent 
-          ? <p className='text-lg font-bold mt-4'>Pronto podrás encontrar los mejores vuelos aquí!</p>
+          ? <p className='text-lg font-bold mt-4'>Te estaremos contactando para que encuentres los mejores vuelos!</p>
           : 
           (
             <form 
