@@ -2,6 +2,8 @@ import { FormEvent, useState } from 'react';
 import { milleros_api } from '../../api/milleros_api';
 import { useCountdown } from '../../hooks/useCountdown';
 import { TimeBox } from './TimeBox';
+import { useWindowSize } from '@uidotdev/usehooks';
+import ReactConfetti from 'react-confetti';
 
 export const Countdown = () => {
 
@@ -10,7 +12,9 @@ export const Countdown = () => {
 	const [isSent, setIsSent] = useState(false)
   const [error, setError] = useState<string | null >(null)
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const {width, height}  = useWindowSize()
+
+  const handleSubmit = (e) => {
 
     e.preventDefault()
 
@@ -34,31 +38,34 @@ export const Countdown = () => {
       </div>
       {
         isSent 
-          ? <p className='text-lg font-bold mt-4'>Te estaremos contactando para que encuentres los mejores vuelos!</p>
+          ? <p className='text-lg font-bold mt-4'>Prepara las valijas, pronto te contactaremos!</p>
           : 
           (
             <form 
-              className='mt-8 flex flex-col gap-2 w-full items-center'
+              className='mt-8 flex flex-col gap-2 w-full items-center max-w-sm'
               onSubmit={handleSubmit}
             >
               <input 
                 name='email' 
                 type='email' 
                 placeholder='Email' 
-                className='p-2 rounded-md px-4 w-full bg-gray-200 hover:bg-gray-300 font-medium' 
+                className='p-2 rounded-md px-4 w-full bg-gray-200 hover:bg-gray-300 font-medium text-neutral-600' 
                 required
               />
               <button 
                 type='submit'
                 className='p-2 rounded-md px-4 w-full bg-red-600 hover:bg-red-500 font-medium cursor-pointer'
-                >
-                Se el primero en enterarte
+              >
+                Avisame
               </button>
               {
                 error && <p className='text-sm font-semibold flex-grow-0'>{error}</p>
               }
             </form>
         )
+      }
+      {
+        isSent && <ReactConfetti width={width} height={height} />
       }
     </div>
   );
