@@ -1,40 +1,37 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gcp-devops-gke
+  name: milleros-production
   labels:
-    app: gcp
+    app: milleros
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: gcp
+      app: milleros
   template:
     metadata:
       labels:
-        app: gcp
+        app: milleros
     spec:
       containers:
-      - name: gcp-devops-gke
-        image: gcr.io/second-hold-388702/gcpdevops:latest
+      - name: client
+        image: gcr.io/milleros/client:latest
         ports:
-        - containerPort: 5000
-        env:
-          - name: PORT
-            value: "5000"
+        - containerPort: 3000
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: gcp-devops-gke-service
-  namespace: gcp-devops-prod
+  name: milleros-production-client-service
+  namespace: milleros-prod
   labels:
     app.kubernetes.io/managed-by: "gcp-cloud-build-deploy"
 spec:
   type: LoadBalancer
   selector:
-    app: gcp
+    app: milleros
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 5000
+      targetPort: 3000
