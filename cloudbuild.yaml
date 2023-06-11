@@ -13,5 +13,5 @@ steps:
   - --filename=gke.yaml
   - --image=gcr.io/$PROJECT_ID/client
   - --location=us-west1-c
-  - --cluster=gke_milleros_us-west1-c_milleros
+  - --cluster=milleros
   - --namespace=milleros-prod
