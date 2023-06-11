@@ -8,14 +8,13 @@ function App() {
 
   useEffect(() => {
 
-    console.log('hola')
     const analytics = import.meta.env.VITE_GOOGLE_ANALYTICS_ID ?? false
     if (!analytics) return;
 
     ReactGA.initialize(analytics)
-    history.listen( location => ReactGA.pageview(location.pathname))
+    ReactGA.pageview(window.location.pathname + window.location.search)
 
-  }, [location.pathname])
+  }, [window.location.pathname + window.location.search])
 
 
   return (
