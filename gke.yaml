@@ -46,7 +46,7 @@ metadata:
 spec:
   defaultBackend:
     service:
-      name: milleros-prod
+      name: milleros-production-client-service
       port:
         number: 80
   rules:
@@ -57,6 +57,6 @@ spec:
         path: "/ui"
         backend:
           service:
-            name: milleros
+            name: milleros-production-client-service
             port:
               number: 80
