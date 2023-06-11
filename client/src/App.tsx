@@ -12,7 +12,7 @@ function App() {
     if (!analytics) return;
 
     ReactGA.initialize(analytics)
-    ReactGA.pageview(window.location.pathname + window.location.search)
+    ReactGA.send({ hitType: 'pageview', page: window.location.pathname })
 
   }, [window.location.pathname + window.location.search])
 
