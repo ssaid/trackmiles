@@ -35,3 +35,28 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 3000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-ingress-no-rewrite
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  defaultBackend:
+    service:
+      name: milleros-prod
+      port:
+        number: 80
+  rules:
+  - host: "frontend.milleros.com.ar"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/ui"
+        backend:
+          service:
+            name: milleros
+            port:
+              number: 80
