@@ -22,7 +22,7 @@ export const Countdown = () => {
 
     milleros_api.post('/waitinglist/', { email })
       .then( _ => setIsSent(true) )
-      .catch( e => setError(e.response.data.email[0]) )
+      .catch( e => setError(e.response?.data?.email[0] ?? "Ha ocurrido un error inesperado.") )
 
   }
 
