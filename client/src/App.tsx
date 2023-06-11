@@ -1,18 +1,22 @@
 import { useEffect } from 'react';
-import ReactGA from 'react-ga';
+import ReactGA from 'react-ga4';
 import bgImage from './assets/bg.jpg'
 import { Countdown } from './components/countdown/Countdown'
 
 function App() {
 
-  const analytics = import.meta.env.VITE_GOOGLE_ANALYTICS_ID ?? false
 
   useEffect(() => {
-    if (analytics){ 
-      ReactGA.initialize(analytics);
-      ReactGA.pageview(window.location.pathname + window.location.search);
-    }
-  }, [])
+
+    console.log('hola')
+    const analytics = import.meta.env.VITE_GOOGLE_ANALYTICS_ID ?? false
+    if (!analytics) return;
+
+    ReactGA.initialize(analytics)
+    history.listen( location => ReactGA.pageview(location.pathname))
+
+  }, [location.pathname])
+
 
   return (
 

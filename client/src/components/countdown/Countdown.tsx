@@ -10,18 +10,17 @@ export const Countdown = () => {
 	const [isSent, setIsSent] = useState(false)
   const [error, setError] = useState<string | null >(null)
 
-	const handleSubmit = async(e: FormEvent<HTMLFormElement>) => {
-		e.preventDefault()
-		const email = e.target.email.value
-    try{
-      const res = await milleros_api.post('/waitinglist/', { email })
-      setIsSent(true)
-    }catch(e){
-      setError(e.response.data.email[0])
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
 
-    }
+    e.preventDefault()
 
-	}
+    const email = e.target.email.value
+
+    milleros_api.post('/waitinglist/', { email })
+      .then( _ => setIsSent(true) )
+      .catch( e => setError(e.response.data.email[0]) )
+
+  }
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
