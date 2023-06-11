@@ -29,7 +29,7 @@ export const Countdown = () => {
   return (
     <div className="flex flex-col items-center justify-center h-screen">
       <h1 className="text-6xl font-bold mb-4">Milleros</h1>
-      <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">¿Ya pensaste en tu próximo destino?</h2>
+      <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4">¿Ya pensaste en tu próximo destino?</h2>
       <div className="flex">
         <TimeBox label="Dias" content={days} />
         <TimeBox label="Horas" content={hours} />
