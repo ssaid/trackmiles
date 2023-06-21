@@ -16,7 +16,7 @@ steps:
 - name: 'gcr.io/cloud-builders/gke-deploy'
   args:
   - run
-  - --filename=k8s-client.yaml
+  - --filename=k8s.yaml
   - --image=gcr.io/$PROJECT_ID/client
   - --location=us-west1-c
   - --cluster=milleros
