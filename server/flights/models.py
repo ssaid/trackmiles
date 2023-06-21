@@ -20,7 +20,7 @@ class Airport(models.Model):
         ordering = ['country__name', 'name']
 
     def __str__(self):
-        return '[%s] %s' % (self.country and self.country.code or '-', self.code)
+        return '%s [%s]' % (self.code, self.country and self.country.code or '-')
 
 class Country(models.Model):
 

@@ -83,30 +83,23 @@ class CountryView(generics.ListAPIView):
 
 class AirportView(generics.ListAPIView):
 
-    permission_classes = [permissions.IsAuthenticated]
-
     serializer_class = AirportSerializer
     queryset = Airport.objects.all()
 
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['name', 'code', 'city', 'country__name', 'region__name']
-
-    pagination_class = pagination.LimitOffsetPagination
 
 
+class AirportsView(generics.ListAPIView):
 
-class PreferenceViewSet(viewsets.ModelViewSet):
-
-    permission_classes = [permissions.IsAuthenticated]
+    # permission_classes = [permissions.IsAuthenticated]
 
     serializer_class = PreferenceSerializer
-    queryset = Preference.objects.all()
+    queryset = Preference.objects.distinct('airport_origin').filter(airport_origin__isnull=False)
 
-    def get_queryset(self):
-        return Preference.objects.filter(user=self.request.user)
+    # def get_queryset(self):
+    #     return Preference.objects.filter(user=self.request.user)
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+    # def perform_create(self, serializer):
+    #     serializer.save(user=self.request.user)
 
 
 class WaitingListView(generics.CreateAPIView):

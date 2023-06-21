@@ -34,47 +34,37 @@ class CountrySerializer(serializers.ModelSerializer):
         model = Country
         fields = '__all__'
 
+
+
 class AirportSerializer(serializers.ModelSerializer):
-
-    country = serializers.StringRelatedField()
-    class Meta:
-        model = Airport
-        fields = [ 'id', 'name', 'code', 'city', 'country' ]
-
-
+    
+        class Meta:
+            model = Airport
+            fields = ['display_name', 'code']
 
 class PreferenceSerializer(serializers.ModelSerializer):
 
-
-    region_destination_name = serializers.CharField(source='region_destination.name', read_only=True)
-    region_origin_name = serializers.CharField(source='region_origin.name', read_only=True)
-    airport_origin_name = serializers.CharField(source='airport_origin.name', read_only=True)
-    airport_destination_name = serializers.CharField(source='airport_destination.name', read_only=True)
-    country_origin_name = serializers.CharField(source='country_origin.name', read_only=True)
-    country_destination_name = serializers.CharField(source='country_destination.name', read_only=True)
-
-
-    def validate(self, data):
-
-        origin_fields = ( 'region_origin', 'airport_origin', 'country_origin' )
-        destination_fields = ( 'region_destination', 'airport_destination', 'country_destination' )
-
-        num_origin_fields = sum([field in data for field in origin_fields])
-        num_destination_fields = sum([field in data for field in destination_fields])
-
-        if num_origin_fields != 1:
-            raise serializers.ValidationError('You must provide one origin field.')
-        if num_destination_fields != 1:
-            raise serializers.ValidationError('You must provide one destination field.')
-
-        validated_data = super().validate(data)
-
-        return validated_data
-
+    airport_origin = serializers.SerializerMethodField()
+    airport_destinations = serializers.SerializerMethodField()
 
     class Meta:
         model = Preference
-        exclude = ['user']
+        fields = ['airport_origin', 'airport_destinations']
+
+    def get_airport_origin(self, obj):
+        airport_origin = obj.airport_origin
+        if airport_origin:
+            serializer = AirportSerializer(airport_origin)
+            return serializer.data
+        return None
+
+    def get_airport_destinations(self, obj):
+        airport_origin = obj.airport_origin
+        if airport_origin:
+            airports_destinations = Airport.objects.filter(users_destination__airport_origin=airport_origin).distinct()
+            serializer = AirportSerializer(airports_destinations, many=True)
+            return serializer.data
+        return []
 
 class WaitingListSerializer(serializers.ModelSerializer):
 
