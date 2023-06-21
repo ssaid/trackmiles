@@ -17,6 +17,9 @@ steps:
   args:
   - run
   - --filename=k8s.yaml
+  - --image=gcr.io/$PROJECT_ID/client
+  - --image=gcr.io/$PROJECT_ID/server
+  - --filename=k8s.yaml
   - --location=us-west1-c
   - --cluster=milleros
   - --namespace=milleros
