@@ -1,52 +1,3 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: milleros-client-vars
-  namespace: milleros
-data:
-  VITE_MILLEROS_BASE_URL: https://api.milleros.com.ar/api/v1
-  VITE_RELEASE_DATE: 2023-08-01
-  VITE_GOOGLE_ANALYTICS_ID: G-W355W32KPR
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
-    app: milleros-client
-  name: milleros-client
-  namespace: milleros
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: milleros-client
-  template:
-    metadata:
-      labels:
-        app: milleros-client
-    spec:
-      containers:
-      - image: gcr.io/milleros/client:latest
-        name: client
-        ports:
-        - containerPort: 3000 
-        envFrom:
-        - configMapRef:
-            name: milleros-client-vars
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: milleros-client
-  namespace: milleros
-spec:
-  ports:
-  - port: 80
-    targetPort: 3000
-    protocol: TCP
-  selector:
-    app: milleros-client
----
 apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
@@ -86,31 +37,6 @@ spec:
       - http01:
           ingress:
             ingressClassName: nginx
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: milleros-test
-  namespace: milleros
-  annotations: 
-    cert-manager.io/issuer: "letsencrypt-prod"
-spec:
-  ingressClassName: nginx
-  tls:
-  - hosts:
-    - milleros.com.ar
-    secretName: milleros-production-tls
-  rules:
-  - host: milleros.com.ar
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: milleros-client
-            port:
-              number: 80
 ---
 apiVersion: v1
 kind: ConfigMap
