@@ -21,6 +21,7 @@ steps:
   - --location=us-west1-c
   - --cluster=milleros
   - --namespace=milleros
+  - --output=output-client
 - name: 'gcr.io/cloud-builders/gke-deploy'
   args:
   - run
@@ -30,3 +31,4 @@ steps:
   - --location=us-west1-c
   - --cluster=milleros
   - --namespace=milleros
+  - --output=output-server
