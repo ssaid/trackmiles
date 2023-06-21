@@ -16,7 +16,7 @@ User = get_user_model()
 
 class RegistrationView(APIView):
     """
-    View for user management
+    View for user management.
     """
 
     @swagger_auto_schema(
