@@ -282,13 +282,13 @@ spec:
   ingressClassName: nginx
   tls:
   - hosts:
-    - api.milleros.com.ar
+    - flower.milleros.com.ar
     secretName: milleros-server-production-tls
   rules:
-  - host: api.milleros.com.ar
+  - host: flower.milleros.com.ar
     http:
       paths:
-      - path: /flower
+      - path: /
         pathType: Prefix
         backend:
           service:
