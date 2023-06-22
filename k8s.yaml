@@ -214,10 +214,6 @@ spec:
                 name: database-postgresql
                 key: postgres-password
         command: ["celery", "-A", "server", "flower", "--address=0.0.0.0", "--port=5555"]
-      - image: redis:7-alpine
-        name: redis
-        ports:
-        - containerPort: 6379 
 ---
 apiVersion: v1
 kind: Service
@@ -295,3 +291,39 @@ spec:
             name: milleros-server-flower
             port:
               number: 5555
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: redis
+  name: redis
+  namespace: milleros
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - image: redis
+        name: redis
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: redis
+  name: redis
+  namespace: milleros
+spec:
+  ports:
+  - port: 6379
+    protocol: TCP
+    targetPort: 6379
+  selector:
+    app: redis
