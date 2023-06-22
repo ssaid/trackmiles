@@ -283,7 +283,7 @@ spec:
   tls:
   - hosts:
     - flower.milleros.com.ar
-    secretName: milleros-server-production-tls
+    secretName: milleros-server-flower-production-tls
   rules:
   - host: flower.milleros.com.ar
     http:
