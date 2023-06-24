@@ -63,3 +63,4 @@ django-celery-beat
 redis
 flower
 jq
+whitenoise

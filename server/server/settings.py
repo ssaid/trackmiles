@@ -47,6 +47,7 @@ class Dev(Configuration):
 
     MIDDLEWARE = [
         'django.middleware.security.SecurityMiddleware',
+        'whitenoise.middleware.WhiteNoiseMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
         'django.middleware.common.CommonMiddleware',
         # 'django.middleware.csrf.CsrfViewMiddleware',
@@ -56,6 +57,8 @@ class Dev(Configuration):
         "corsheaders.middleware.CorsMiddleware",
         "django.middleware.common.CommonMiddleware",
     ]
+
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
     ROOT_URLCONF = 'server.urls'
 
@@ -129,6 +132,7 @@ class Dev(Configuration):
     # https://docs.djangoproject.com/en/{{ docs_version }}/howto/static-files/
 
     STATIC_URL = values.Value('/static/')
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
     # MP_ACCESS_TOKEN = values.SecretValue()
 
