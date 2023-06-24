@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, FormEventHandler, useState } from 'react';
 import { milleros_api } from '../../api/milleros_api';
 import { useCountdown } from '../../hooks/useCountdown';
 import { TimeBox } from './TimeBox';
@@ -14,10 +14,11 @@ export const Countdown = () => {
 
   const {width, height}  = useWindowSize()
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
 
     e.preventDefault()
 
+    //@ts-ignore
     const email = e.target.email.value
 
     milleros_api.post('/waitinglist/', { email })
