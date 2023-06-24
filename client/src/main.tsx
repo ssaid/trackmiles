@@ -7,6 +7,7 @@ import { router } from './router'
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import theme from './theme'
 import { QueryClient, QueryClientProvider } from 'react-query'
+import { ErrorBoundary } from 'react-error-boundary'
 
 const queryClient = new QueryClient()
 

@@ -1,7 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
 import { App } from "../App";
 import { AnalyticsView } from "../views/AnalyticsView";
-import { Home } from "../views/Home";
+import { ErrorView } from "../views/ErrorView";
+import { HomeView } from "../views/HomeView";
 
 
 export const router = createBrowserRouter([
@@ -9,11 +10,12 @@ export const router = createBrowserRouter([
     path: "/",
     element: <App />,
     children: [
-      { path: "/", element: <Home /> },
-    ]
+      { path: "/", element: <HomeView /> },
+      {
+        path: 'analytics',
+        element: <AnalyticsView />,
+      },
+    ],
+    errorElement: <ErrorView />,
   },
-  {
-    path: 'analytics',
-    element: <AnalyticsView />,
-  }
 ]);

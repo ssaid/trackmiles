@@ -1,4 +1,4 @@
-import { Autocomplete, Stack, TextField } from "@mui/material"
+import { Autocomplete, Skeleton, Stack, TextField } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { useAirports } from "../hooks/useAirports"
@@ -48,7 +48,24 @@ export const SearchBar = () => {
   }
 
 
-  if (isLoading) return <p>Loading...</p>
+  if (isLoading) return (
+
+    <div 
+      className="flex flex-col lg:w-[90%] w-[95%] md:flex-row justify-center align-center gap-3 bg-neutral-100 p-8 rounded border-2 border-zinc-200"
+    >
+      <Skeleton variant="rounded" animation="wave" >
+        <TextField sx={{ minWidth: 300 }} />
+      </Skeleton>
+      <Skeleton variant="rounded" animation="wave" >
+        <TextField sx={{ minWidth: 300 }} />
+      </Skeleton>
+      <Skeleton variant="rounded" animation="wave" >
+        <button className="rounded p-2 px-4">Buscar</button>
+      </Skeleton>
+
+
+    </div>
+  )
 
 
   return (
@@ -58,6 +75,7 @@ export const SearchBar = () => {
     >
       <Autocomplete
         disablePortal
+        isOptionEqualToValue={(option, value) => option === value}
         options={origins!}
         sx={{ minWidth: 300 }}
         onInputChange={handleOriginChange}
@@ -72,6 +90,7 @@ export const SearchBar = () => {
       <Autocomplete
         disablePortal
         options={getDestinations(origin)}
+        isOptionEqualToValue={(option, value) => option === value}
         value={dest}
         onChange={(_, newValue) => setDest(newValue)}
         sx={{ minWidth: 300 }}
