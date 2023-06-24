@@ -113,7 +113,7 @@ data:
   SQL_HOST: database-postgresql.default.svc.cluster.local
   SQL_PORT: '5432'
   DJANGO_ALLOWED_HOSTS: localhost;127.0.0.1;server;localhost;backend-trackmiles.ovh001.eynes.com.ar;[::1];test.milleros.com.ar;api.test.milleros.com.ar
-  DJANGO_CORS_ALLOWED_ORIGINS: https://api.test.milleros.com.ar
+  DJANGO_CORS_ALLOWED_ORIGINS: https://test.milleros.com.ar
   DJANGO_SECRET_KEY: foo
   DJANGO_CSRF_TRUSTED_ORIGINS: https://api.test.milleros.com.ar;https://test.milleros.com.ar
   DJANGO_SECRET_KEY: django-insecure-key
