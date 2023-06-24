@@ -153,10 +153,10 @@ def queue_processor(queue=[]):
     # Create a thread or process pool based on the number of requests you want to perform in parallel
     # By default, the ThreadPoolExecutor is used for threads, and ProcessPoolExecutor for processes.
     # You can specify the number of workers as an argument to the executor (e.g., max_workers=5)
-    executor = concurrent.futures.ThreadPoolExecutor(max_workers=12)
+    executor = concurrent.futures.ThreadPoolExecutor(max_workers=10)
 
     # Submit API requests to the executor
-    futures = [executor.submit(make_api_request, data) for data in queue[:10]]
+    futures = [executor.submit(make_api_request, data) for data in queue]
 
     # Retrieve the results of the completed requests locked until all futures are completed
     results = [future.result() for future in concurrent.futures.as_completed(futures)]
