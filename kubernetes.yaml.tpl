@@ -42,7 +42,7 @@ metadata:
 spec:
   ports:
   - port: 80
-    targetPort: 3000
+    targetPort: 80
     protocol: TCP
   selector:
     app: milleros-client
