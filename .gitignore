@@ -131,4 +131,3 @@ dmypy.json
 
 # configuration stuff
 # data/
-.env.prod*

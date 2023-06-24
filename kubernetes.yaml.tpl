@@ -1,13 +1,3 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: milleros-client-vars
-  namespace: milleros
-data:
-  VITE_MILLEROS_BASE_URL: https://api.milleros.com.ar/api/v1
-  VITE_RELEASE_DATE: 2023-08-01
-  VITE_GOOGLE_ANALYTICS_ID: G-W355W32KPR
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -29,10 +19,7 @@ spec:
       - image: gcr.io/milleros/client:COMMIT_SHA
         name: client
         ports:
-        - containerPort: 3000 
-        envFrom:
-        - configMapRef:
-            name: milleros-client-vars
+        - containerPort: 80 
 ---
 apiVersion: v1
 kind: Service

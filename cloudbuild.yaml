@@ -4,10 +4,6 @@ steps:
   args: ['-c', 'docker pull gcr.io/$PROJECT_ID/client:latest || exit 0']
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-f', './client/DockerfileProd', '-t', 'gcr.io/$PROJECT_ID/client:$SHORT_SHA', './client', '--cache-from', 'gcr.io/$PROJECT_ID/client:latest']
-  env:
-    - 'VITE_MILLEROS_BASE_URL=https://api.milleros.com.ar/api/v1'
-    - 'VITE_RELEASE_DATE=2023-08-01'
-    - 'VITE_GOOGLE_ANALYTICS_ID=G-W355W32KPR'
 - name: 'gcr.io/cloud-builders/docker'
   entrypoint: 'bash'
   args: ['-c', 'docker pull gcr.io/$PROJECT_ID/server:latest || exit 0']
