@@ -11,7 +11,7 @@ export const AnalyticsView = () => {
 
   return (
     <div>
-      <h1>Analytics</h1>
+      <h1>Sabes quien soy? :)</h1>
       {
         JSON.stringify({origin, dest})
       }
