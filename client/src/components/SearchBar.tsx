@@ -51,7 +51,7 @@ export const SearchBar = () => {
   if (isLoading) return (
 
     <div 
-      className="flex flex-col lg:w-[90%] w-[95%] md:flex-row justify-center align-center gap-3 bg-neutral-100 p-8 rounded border-2 border-zinc-200"
+      className="flex flex-col lg:w-[90%] w-[95%] md:flex-row justify-center align-center gap-3 bg-neutral-100 dark:bg-neutral-800 p-8 rounded border-2 border-zinc-200 dark:border-zinc-700"
     >
       <Skeleton variant="rounded" animation="wave" >
         <TextField sx={{ minWidth: 300 }} />
@@ -71,13 +71,14 @@ export const SearchBar = () => {
   return (
 
     <div 
-      className="flex flex-col lg:w-[90%] w-[95%] md:flex-row justify-center align-center gap-3 bg-neutral-100 p-8 rounded border-2 border-zinc-200"
+      className="flex flex-col lg:w-[90%] w-[95%] md:flex-row justify-center align-center gap-3 bg-neutral-100 dark:bg-neutral-800 p-8 rounded border-2 border-zinc-200 dark:border-zinc-700"
     >
       <Autocomplete
         disablePortal
         isOptionEqualToValue={(option, value) => option === value}
         options={origins!}
         sx={{ minWidth: 300 }}
+        className="bg-neutral-100"
         onInputChange={handleOriginChange}
         value={origin}
         renderInput={(params) => 
@@ -94,13 +95,14 @@ export const SearchBar = () => {
         value={dest}
         onChange={(_, newValue) => setDest(newValue)}
         sx={{ minWidth: 300 }}
+        className="bg-neutral-100"
         renderInput={(params) => <TextField {...params} label="Destino" />}
       />
 
 
       <button
         disabled={!origin || !dest}
-        className="bg-zinc-600 text-neutral-100 rounded p-2 px-4 disabled:bg-zinc-400 disabled:text-zinc-200 transition-all"
+        className="bg-zinc-600 dark:bg-orange-500 font-semibold text-neutral-100 rounded p-2 px-4 disabled:bg-zinc-400 disabled:text-zinc-200 dark:disabled:bg-orange-400 transition-all"
         onClick={handleSubmit}
       >
         Buscar

@@ -1,3 +1,4 @@
+import { ToggleButton } from './components/toggleButton';
 import { useEffect } from 'react';
 import ReactGA from 'react-ga4';
 import { Outlet } from 'react-router-dom';
@@ -19,6 +20,7 @@ export function App() {
   return (
 
     <div className="w-auto h-screen relative">
+      <ToggleButton />
       <Outlet />
     </div>
 
