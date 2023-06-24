@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 import ReactGA from 'react-ga4';
+import { Outlet } from 'react-router-dom';
 import bgImage from './assets/bg.jpg'
-import { Countdown } from './components/countdown/Countdown'
+import { Wave } from './components/Wave';
 
-function App() {
+export function App() {
 
 
   useEffect(() => {
@@ -22,20 +23,30 @@ function App() {
     <div className="w-auto h-screen relative">
 
       <div>
-        <img 
-          src={bgImage} 
-          alt="background" 
-          className="absolute object-cover w-full h-full -z-10"
-        />
-      </div>
-      <section className="bg-black bg-opacity-60 text-white-400 body-font text-white">
-        <div className="container flex flex-col items-center justify-center h-screen px-5 py-24 mx-auto">
-          <Countdown />
+        <div className="absolute inset-0">
+          <img 
+            src={bgImage} 
+            alt="background" 
+            className="absolute object-cover w-full h-full -z-10"
+          />
+          <div className="absolute inset-0 bg-black opacity-60"></div>
         </div>
-      </section>
+
+        <div className="absolute h-screen w-screen flex flex-col justify-end object-fill">
+          <Wave/>
+          <div className='h-[35%] w-screen bg-neutral-100'>
+            <div className="flex flex-col justify-end p-10 items-center h-full">
+              Milleros
+            </div>
+          </div>
+        </div>
+
+
+        
+      </div>
+      <Outlet />
     </div>
 
   )
 }
 
-export default App
