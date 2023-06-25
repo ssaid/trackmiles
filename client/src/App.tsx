@@ -19,8 +19,7 @@ function App() {
 
   return (
 
-    <div className="w-auto h-screen relative">
-
+    <div className="w-auto h-screen relative font-poppins">
       <div>
         <img 
           src={bgImage} 
