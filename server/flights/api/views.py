@@ -1,3 +1,4 @@
+from django.db.models import Prefetch, Subquery, OuterRef
 from rest_framework.views import APIView, Response
 from rest_framework import permissions, generics, pagination, status, filters, viewsets
 from rest_framework.response import Response
@@ -105,3 +106,56 @@ class AirportsView(generics.ListAPIView):
 class WaitingListView(generics.CreateAPIView):
 
     serializer_class = WaitingListSerializer
+
+
+
+class FlightDetailView(APIView):
+
+    def get(self, request):
+
+        origin = request.GET.get('origin')
+        destination = request.GET.get('destination')
+        from_date = request.GET.get('from_date')
+        to_date = request.GET.get('to_date')
+
+        if not origin or not destination:
+            return Response({'msg': 'Please provide origin and destination'}, status=status.HTTP_400_BAD_REQUEST)
+
+        flight = Flight.objects.filter(
+            origin__code__icontains=origin, 
+            destination__code__icontains=destination
+        ).first()
+
+        if not flight:
+            return Response({'msg': 'No flights found'}, status=status.HTTP_404_NOT_FOUND)
+
+        data = {
+            'origin': flight.origin.code,
+            'dest': flight.destination.code,
+            'details': []
+        }
+
+        flights = Flight.objects.filter(
+            origin__code__icontains=origin, 
+            destination__code__icontains=destination
+        )
+
+        if from_date:
+            flights = flights.filter(flight_date__gte=from_date)
+        if to_date:
+            flights = flights.filter(flight_date__lte=to_date)
+
+
+
+        for f in flights:
+            info = FlightHistorySerializer(f.history.last())
+            data['details'].append(
+                { 
+                    'flight_date': f.flight_date, 
+                    'provider': f.provider,
+                    'external_link': f.external_link,
+                    **info.data, 
+                }
+            )
+
+        return Response(data)

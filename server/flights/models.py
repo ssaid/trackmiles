@@ -42,12 +42,19 @@ class Region(models.Model):
     name = models.SlugField(max_length=64)
 
 
+class Provider(models.Model):
+
+    name = models.CharField(max_length=64)
+    base_url = models.URLField(null=True, blank=True)
+
 class Flight(models.Model):
 
-    airport_origin = models.ForeignKey(Airport, on_delete=models.PROTECT, related_name="flight_outgoing")
-    airport_destination = models.ForeignKey(Airport, on_delete=models.PROTECT, related_name="flights_incoming")
+    origin = models.ForeignKey(Airport, on_delete=models.PROTECT, related_name="flight_outgoing")
+    destination = models.ForeignKey(Airport, on_delete=models.PROTECT, related_name="flights_incoming")
 
     flight_date = models.DateField(null=False, blank=False)
+
+    provider = models.ForeignKey(Provider, on_delete=models.PROTECT, related_name="flights", null=True)
 
     external_link = models.URLField()
 
@@ -63,7 +70,6 @@ class Flight(models.Model):
 
         return self.costs.filter(flight_date__gte=delta_date).aggregate(models.Avg('cost'))['cost__avg']
 
-
     def get_avg_last_three_months(self):
         delta_date = datetime.now() - timedelta(days=90)
         return self.costs.filter(flight_date__gte=delta_date, ).aggregate(models.Avg('cost'))['cost__avg']
@@ -74,7 +80,6 @@ class Flight(models.Model):
 
     def get_best_price_by_money(self):
         return self.costs.filter(flight_date__gte=datetime.now()).order_by('history__money').first()
-
 
     def get_best_price_by_miles(self):
         return self.costs.filter(flight_date__gte=datetime.now()).order_by('history__miles').first()
@@ -88,6 +93,9 @@ class FlightHistory(models.Model):
 
     money = models.FloatField()
     miles = models.PositiveIntegerField()
+    seats = models.PositiveIntegerField(null=True, blank=True)
+    duration = models.PositiveIntegerField(null=True, blank=True)
+    stops = models.PositiveIntegerField(null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
 

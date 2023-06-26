@@ -29,8 +29,10 @@ export const Countdown = () => {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-      <h1 className="text-6xl font-bold mb-4">Milleros</h1>
-      <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4">¿Ya pensaste en tu próximo destino?</h2>
+      <div className="flex flex-col items-center justify-center text-neutral-300">
+        <h1 className="md:text-8xl text-7xl font-bold italic">Milleros</h1>
+        <h2 className="text-xl -mt-2 sm:text-xl md:text-2xl font-semibold mb-4">Adventure is out there</h2>
+      </div>
       <div className="flex">
         <TimeBox label="Dias" content={days} />
         <TimeBox label="Horas" content={hours} />
@@ -50,14 +52,14 @@ export const Countdown = () => {
                 name='email' 
                 type='email' 
                 placeholder='Email' 
-                className='p-2 rounded-md px-4 w-full bg-gray-200 hover:bg-gray-300 font-medium text-neutral-600' 
+                className='p-2 rounded-md px-4 w-full bg-gray-100 hover:bg-gray-200 font-medium text-neutral-700' 
                 required
               />
               <button 
                 type='submit'
-                className='p-2 rounded-md px-4 w-full bg-red-600 hover:bg-red-500 font-medium cursor-pointer'
+                className='p-2 rounded-md px-4 w-full text-neutral-100 bg-orange-500 hover:bg-orange-600 font-semibold cursor-pointer'
               >
-                Avisame
+                Quiero viajar!
               </button>
               {
                 error && <p className='text-sm font-semibold flex-grow-0'>{error}</p>
