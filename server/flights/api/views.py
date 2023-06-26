@@ -110,8 +110,19 @@ class WaitingListView(generics.CreateAPIView):
 
 
 class FlightDetailView(APIView):
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter('origin', openapi.IN_QUERY, description='Origin airport code', type=openapi.TYPE_STRING),
+            openapi.Parameter('destination', openapi.IN_QUERY, description='Destination airport code', type=openapi.TYPE_STRING),
+            openapi.Parameter('from_date', openapi.IN_QUERY, description='Start date', type=openapi.TYPE_STRING),
+            openapi.Parameter('to_date', openapi.IN_QUERY, description='End date', type=openapi.TYPE_STRING),
+        ]
+    )
 
     def get(self, request):
+        """
+        Retrieve flight details based on origin, destination, and date range.
+        """
 
         origin = request.GET.get('origin')
         destination = request.GET.get('destination')
@@ -130,8 +141,8 @@ class FlightDetailView(APIView):
             return Response({'msg': 'No flights found'}, status=status.HTTP_404_NOT_FOUND)
 
         data = {
-            'origin': flight.origin.code,
-            'dest': flight.destination.code,
+            'origin': flight.origin.display_name,
+            'dest': flight.destination.display_name,
             'details': []
         }
 
