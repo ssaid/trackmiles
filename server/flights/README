@@ -10,6 +10,7 @@ API Signature
   'stops': cantidad de escalas, [INT]
   'baggage': si incluye equipaje, [BOOL]
   'provider': ['SMILES', 'SMILES_CLUB']
+  'buy_url': url lista para la compra
   }
 Inicialmente consultará los fares de SMILES_CLUB haciendo 2 Requests por fecha.
 Preparar endpoint que reciba los datos (/api/ingest)
