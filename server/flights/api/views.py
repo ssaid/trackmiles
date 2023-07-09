@@ -163,7 +163,7 @@ class FlightDetailView(APIView):
                 data['details'].append(
                     {
                         'flight_date': f.flight_date,
-                        'provider': f.provider,
+                        # 'provider': f.provider,
                         'external_link': f.external_link,
                         **info.data,
                     }
