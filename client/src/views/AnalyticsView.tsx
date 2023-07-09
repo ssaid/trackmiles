@@ -30,7 +30,6 @@ export const AnalyticsView = () => {
       { type: "date", id: "Date" },
       { type: "number", id: "Won/Loss" },
     ],
-    [new Date(2022, 1, 1), 0],
     ...data.details.map(
       detail => [new Date(detail.flight_date), detail.miles]
     )
