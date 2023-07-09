@@ -139,6 +139,16 @@ class Preference(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    @classmethod
+    def get_all_routes(self):
+        preferences = self.objects.all()
+        all_routes = []
+        for preference in preferences:
+            for route in preference.get_routes():
+                if route not in all_routes:
+                    all_routes.append(route)
+        return all_routes
+
     def get_routes(self):
         """ <- set(('eze','mex'),('eze','cun'))"""
         a_fr = []

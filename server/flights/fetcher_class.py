@@ -34,13 +34,13 @@ class FlightFetcherSmiles():
         return self.__repr__()
 
     def start(self):
-        print(f'{self}: Starting...')
-        print('-> Requesting Flight')
+        print(f'{self}: Requesting Flights...')
         self.do_request_flight()
-        print('-> Selecting the best Flight')
+        print(f'{self}: Selecting lowest price...')
         self._best_flight = self.get_best_flight()
-        print('-> Requesting the costs')
+        print(f'{self}: Requesting Flights Costs...')
         self.do_request_cost()
+        print(f'{self}: Flights Costs...')
         print('-> Preparing data for Ingestor')
         self.build_data()
         self.finish()
@@ -53,13 +53,14 @@ class FlightFetcherSmiles():
         return url
 
     def build_data(self):
+        print(f'{self}: Building data')
         # Taxes
         total_tax_money = self._data_flight_cost["totals"]["totalBoardingTax"]["money"]
         total_tax_miles = self._data_flight_cost["totals"]["totalBoardingTax"]["miles"]
         # Amount total in miles
         total_flight_and_tax_miles = self._data_flight_cost["totals"]["total"]["miles"]
         # Base fare on the airline
-        airline_fare_amount_wo_tax = self._data_flight_cost['flightList'][0]['airlineFlightMoney']
+        airline_fare_amount_wo_tax = self._data_flight_cost['flightList'][0].get('airlineFlightMoney', 0)
         # Total in money
         total_flight_and_tax_money = airline_fare_amount_wo_tax + total_tax_money
         # Generic Data
@@ -95,9 +96,9 @@ class FlightFetcherSmiles():
         }
 
     def notify_ingestor(self, data):
-        print(' -> Notifying ingestor')
+        print(f'{self}: Sending data to ingestor')
         retry = 0
-        max_retries = 100
+        max_retries = 5
         done = False
         method = 'POST'
         url = self._ingestor_url
@@ -107,24 +108,23 @@ class FlightFetcherSmiles():
         }
         while not done and retry < max_retries:
             try:
-                print('   -> Sending request')
                 response = requests.request(method, url, headers=headers, json=data)
                 response.raise_for_status()
                 # response_json = response.json()
             except Exception:
                 traceback.print_exc()
-                print(f'    -> Retrying #{retry + 1}/{self._max_retries}')
+                print(f'{self}: Retrying #{retry + 1}/{max_retries}')
                 time.sleep(5)
                 retry += 1
             else:
                 done = True
-                print('    -> Ingestor Notified, bye!')
+                print(f'{self}: Ingestor notified. Buen vuelo!')
 
     def finish(self):
         if self._ingestor:
             self.notify_ingestor(self._data)
         else:
-            print(f'-> Ingestor disabled, displaying data instead')
+            print('-> Ingestor disabled, displaying data instead')
             import pprint; pprint.pprint(self._data)
 
     def get_api_key(self):
@@ -158,7 +158,7 @@ class FlightFetcherSmiles():
                     'durationhs': flight['duration']['hours'],
                     'fare_type': fare['type'],
                     'fare_uid': fare['uid'],
-                    'base_amount_money': flight['airlineFlightMoney'],
+                    'base_amount_money': flight.get('airlineFlightMoney', 0),
                     **fare,
                 }
                 flights.append(dd)
@@ -183,7 +183,7 @@ class FlightFetcherSmiles():
                 response_json = response.json()
             except Exception:
                 traceback.print_exc()
-                print(f'Retrying #{retry + 1}/{self._max_retries}')
+                print(f'{self}: Retrying #{retry + 1}/{self._max_retries}')
                 time.sleep(5)
                 retry += 1
             else:
@@ -215,7 +215,7 @@ class FlightFetcherSmiles():
                 response_json = response.json()
             except Exception:
                 traceback.print_exc()
-                print(f'Retrying #{retry + 1}/{self._max_retries}')
+                print(f'{self}: Retrying #{retry + 1}/{self._max_retries}')
                 time.sleep(5)
                 retry += 1
             else:

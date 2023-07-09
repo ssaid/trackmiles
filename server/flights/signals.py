@@ -12,6 +12,14 @@
 # @receiver(post_save, sender=Preference, dispatch_uid="schedule_trace")
 # def create_task(sender, instance, created, **kwargs):
 
+#
+#
+# logger = logging.getLogger(__name__)
+#
+#
+# @receiver(post_save, sender=Preference, dispatch_uid="schedule_trace")
+# def create_task(sender, instance, created, **kwargs):
+#
 #     if created:
 #         logger.info("Preference for route user %s created" % instance.user.email)
 #         routes = instance.get_routes()

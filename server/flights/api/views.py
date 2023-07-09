@@ -134,7 +134,7 @@ class FlightDetailView(APIView):
             return Response({'msg': 'Please provide origin and destination'}, status=status.HTTP_400_BAD_REQUEST)
 
         flights = Flight.objects.filter(
-            origin__code__icontains=origin, 
+            origin__code__icontains=origin,
             destination__code__icontains=destination
         )
 
@@ -155,17 +155,17 @@ class FlightDetailView(APIView):
         pf_history = Prefetch('history', queryset=FlightHistory.objects.order_by('-created_at'))
 
         for f in flights.prefetch_related(pf_history).all():
-            # as the default ordering of flight history is -created_at, 
+            # as the default ordering of flight history is -created_at,
             # we know the first record is the newest one
             history = next((fh for fh in f.history.all())) if f.history.exists() else None
             if history:
                 info = FlightHistorySerializer(history)
                 data['details'].append(
-                    { 
-                        'flight_date': f.flight_date, 
+                    {
+                        'flight_date': f.flight_date,
                         'provider': f.provider,
                         'external_link': f.external_link,
-                        **info.data, 
+                        **info.data,
                     }
                 )
 
@@ -221,7 +221,7 @@ class FlightDetailView(APIView):
 
 
         a_origin = Airport.objects.get(code=request.data.get('origin_code').upper())
-        a_destination = Airport.objects.get(code=request.data.get('origin_code').upper())
+        a_destination = Airport.objects.get(code=request.data.get('destination_code').upper())
         provider, _ = Provider.objects.get_or_create(name=request.data.get('provider'))
 
         flight, _ = Flight.objects.get_or_create(
