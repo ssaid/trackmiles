@@ -86,9 +86,12 @@ class WaitingListSerializer(serializers.ModelSerializer):
 
 class FlightHistorySerializer(serializers.ModelSerializer):
 
+    flight_id = serializers.IntegerField()
+    airline_id = serializers.IntegerField()
+
     class Meta:
         model = FlightHistory
-        exclude = ['created_at', 'flight', 'id', 'airline']
+        exclude = ['flight', 'id', 'airline']
 
 class FlightSerializer(serializers.ModelSerializer):
 
@@ -104,4 +107,6 @@ class FlightSerializer(serializers.ModelSerializer):
             serializer = FlightHistorySerializer(flight_history)
             return serializer.data
         return None
+
+
 

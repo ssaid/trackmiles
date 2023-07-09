@@ -12,7 +12,8 @@ from ..models import *
 
 User = get_user_model()
 
-
+import logging
+logger = logging.getLogger(__name__)
 
 
 class RegistrationView(APIView):
@@ -132,41 +133,129 @@ class FlightDetailView(APIView):
         if not origin or not destination:
             return Response({'msg': 'Please provide origin and destination'}, status=status.HTTP_400_BAD_REQUEST)
 
-        flight = Flight.objects.filter(
-            origin__code__icontains=origin, 
-            destination__code__icontains=destination
-        ).first()
-
-        if not flight:
-            return Response({'msg': 'No flights found'}, status=status.HTTP_404_NOT_FOUND)
-
-        data = {
-            'origin': flight.origin.display_name,
-            'dest': flight.destination.display_name,
-            'details': []
-        }
-
         flights = Flight.objects.filter(
             origin__code__icontains=origin, 
             destination__code__icontains=destination
         )
+
+        if not flights.count():
+            return Response({'msg': 'No flights found'}, status=status.HTTP_404_NOT_FOUND)
+
+        data = {
+            'origin': flights.first().origin.display_name,
+            'dest': flights.first().destination.display_name,
+            'details': []
+        }
 
         if from_date:
             flights = flights.filter(flight_date__gte=from_date)
         if to_date:
             flights = flights.filter(flight_date__lte=to_date)
 
+        pf_history = Prefetch('history', queryset=FlightHistory.objects.order_by('-created_at'))
 
-
-        for f in flights:
-            info = FlightHistorySerializer(f.history.last())
-            data['details'].append(
-                { 
-                    'flight_date': f.flight_date, 
-                    'provider': f.provider,
-                    'external_link': f.external_link,
-                    **info.data, 
-                }
-            )
+        for f in flights.prefetch_related(pf_history).all():
+            # as the default ordering of flight history is -created_at, 
+            # we know the first record is the newest one
+            history = next((fh for fh in f.history.all())) if f.history.exists() else None
+            if history:
+                info = FlightHistorySerializer(history)
+                data['details'].append(
+                    { 
+                        'flight_date': f.flight_date, 
+                        'provider': f.provider,
+                        'external_link': f.external_link,
+                        **info.data, 
+                    }
+                )
 
         return Response(data)
+
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'miles': openapi.Schema(type=openapi.TYPE_INTEGER),
+                'tax_miles': openapi.Schema(type=openapi.TYPE_INTEGER),
+                'money': openapi.Schema(type=openapi.TYPE_NUMBER),
+                'tax_money': openapi.Schema(type=openapi.TYPE_NUMBER),
+                'fare_clean': openapi.Schema(type=openapi.TYPE_NUMBER),
+                'seats': openapi.Schema(type=openapi.TYPE_INTEGER),
+                'stops': openapi.Schema(type=openapi.TYPE_INTEGER),
+                'baggage': openapi.Schema(type=openapi.TYPE_BOOLEAN),
+                'departure_date': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE),
+                'airline_code': openapi.Schema(type=openapi.TYPE_STRING),
+                'airline_name': openapi.Schema(type=openapi.TYPE_STRING),
+                'origin_code': openapi.Schema(type=openapi.TYPE_STRING),
+                'destination_code': openapi.Schema(type=openapi.TYPE_STRING),
+                'provider': openapi.Schema(type=openapi.TYPE_STRING),
+                'external_link': openapi.Schema(type=openapi.TYPE_STRING),
+            },
+            required=[
+                'miles',
+                'money',
+                'departure_date',
+                'airline_code',
+                'airline_name',
+                'origin_code',
+                'destination_code',
+                'provider',
+                'external_link',
+            ],
+        ),
+        responses={
+            201: openapi.Response(
+                description='Flight history created successfully.',
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'id': openapi.Schema(type=openapi.TYPE_INTEGER),
+                        # Include other response properties if applicable
+                    },
+                ),
+            ),
+            # Include other response codes and descriptions if applicable
+        },
+    )
+    def post(self, request):
+
+
+        a_origin = Airport.objects.get(code=request.data.get('origin_code').upper())
+        a_destination = Airport.objects.get(code=request.data.get('origin_code').upper())
+        provider, _ = Provider.objects.get_or_create(name=request.data.get('provider'))
+
+        flight, _ = Flight.objects.get_or_create(
+            origin=a_origin,
+            destination=a_destination,
+            provider=provider,
+            flight_date= datetime.strptime(request.data.get('departure_date'), '%Y-%m-%d').date(),
+        )
+
+        external_link = request.data.get('external_link')
+        if external_link != flight.external_link:
+            flight.external_link = external_link
+            flight.save()
+
+
+        airline, _ = AirLine.objects.get_or_create(
+            code=request.data.get('airline_code'),
+            defaults={'name': request.data.get('airline_name')}
+        )
+
+
+        __import__('pdb').set_trace()
+        history = FlightHistorySerializer(
+            data={
+                'flight_id': flight.id,
+                'airline_id': airline.id,
+                **request.data
+            }
+        )
+
+        __import__('pdb').set_trace()
+        if history.is_valid():
+            history.save()
+            return Response(history.data, status=status.HTTP_201_CREATED)
+
+        logger.error(history.errors)
+        return Response(history.errors, status)

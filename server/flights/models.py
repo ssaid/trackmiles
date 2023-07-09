@@ -47,6 +47,7 @@ class Provider(models.Model):
     name = models.CharField(max_length=64)
     base_url = models.URLField(null=True, blank=True)
 
+
 class Flight(models.Model):
 
     origin = models.ForeignKey(Airport, on_delete=models.PROTECT, related_name="flight_outgoing")
@@ -84,20 +85,25 @@ class Flight(models.Model):
     def get_best_price_by_miles(self):
         return self.costs.filter(flight_date__gte=datetime.now()).order_by('history__miles').first()
 
-
-
 class FlightHistory(models.Model):
 
     flight = models.ForeignKey(Flight, on_delete=models.PROTECT, related_name="history")
     airline = models.ForeignKey(AirLine, on_delete=models.PROTECT)
 
     money = models.FloatField()
+    tax_money = models.FloatField(null=True, blank=True)
     miles = models.PositiveIntegerField()
+    tax_miles = models.PositiveIntegerField(null=True, blank=True)
     seats = models.PositiveIntegerField(null=True, blank=True)
     duration = models.PositiveIntegerField(null=True, blank=True)
     stops = models.PositiveIntegerField(null=True, blank=True)
+    baggage = models.BooleanField(default=False)
+    fare_clean = models.FloatField(null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
 
 
 class User(AbstractUser):
