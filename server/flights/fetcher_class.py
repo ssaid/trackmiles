@@ -73,6 +73,7 @@ class FlightFetcherSmiles():
         else:
             baggage = False
         buy_url = self._build_buy_url()
+        duration = self._best_flight['durationhs']
 
         self._data = {
             'miles': total_flight_and_tax_miles,
@@ -90,6 +91,7 @@ class FlightFetcherSmiles():
             'external_link': buy_url,
             'origin_code': self._origin,
             'destination_code': self._destination,
+            'duration': duration,
         }
 
     def notify_ingestor(self, data):
@@ -153,7 +155,7 @@ class FlightFetcherSmiles():
                     'arrivalDate': flight['arrival']['date'],
                     'airline': flight['airline'],
                     'baggage': flight['baggage'],
-                    'duration': flight['durationNumber'],
+                    'durationhs': flight['duration']['hours'],
                     'fare_type': fare['type'],
                     'fare_uid': fare['uid'],
                     'base_amount_money': flight['airlineFlightMoney'],
