@@ -125,6 +125,37 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: milleros-celery-workers
+  labels:
+    app: milleros-celery-workers
+  namespace: milleros-test
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: milleros-celery-workers
+  template:
+    metadata:
+      labels:
+        app: milleros-celery-workers
+    spec:
+      containers:
+      - image: gcr.io/milleros/server:COMMIT_SHA
+        name: celery
+        envFrom:
+        - configMapRef:
+            name: milleros-vars
+        env:
+          - name: SQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: database-postgresql
+                key: postgres-password
+        command: ["celery", "-A", "server", "worker", "-l", "INFO", "-E"]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
   labels:
     app: milleros-server
   name: milleros-server
@@ -165,18 +196,6 @@ spec:
                 name: database-postgresql
                 key: postgres-password
         command: ["gunicorn", "server.wsgi:application", "--bind", "0.0.0.0:8000"]
-      - image: gcr.io/milleros/server:COMMIT_SHA
-        name: celery
-        envFrom:
-        - configMapRef:
-            name: milleros-vars
-        env:
-          - name: SQL_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: database-postgresql
-                key: postgres-password
-        command: ["celery", "-A", "server", "worker", "-l", "INFO", "-E"]
       - image: gcr.io/milleros/server:COMMIT_SHA
         name: celery-beats
         envFrom:
