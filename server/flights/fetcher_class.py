@@ -1,5 +1,4 @@
 from datetime import datetime, date, timedelta
-import concurrent.futures
 import requests
 import traceback
 import time
@@ -11,7 +10,6 @@ class FlightFetcherSmiles():
         self._origin = origin
         self._destination = destination
         self._date = fdate
-        self._ingestor = ingestor
         self._provider = provider
         self._max_retries = 3
         self._retries = 0
@@ -20,11 +18,30 @@ class FlightFetcherSmiles():
         self._best_flight = {}
         self._data = {}
         self._data_fare_uid = None
+        self._ingestor = ingestor
+        if ingestor:
+            self._ingestor_url = os.environ.get('INGEST_HOST')
+            self._ingestor_key = os.environ.get('INGEST_KEY')
+            if not self._ingestor_key or not self._ingestor_url:
+                raise Exception('Ensure INGEST_HOST and INGEST_KEY are properly set')
+        print(f'{self}: Ready')
+
+    def __repr__(self):
+        class_name = type(self).__name__
+        return f"{class_name}(Origin={self._origin!r}, Dest={self._destination!r}, Date={self._date}, Provider={self._provider})"
+
+    def __str__(self):
+        return self.__repr__()
 
     def start(self):
+        print(f'{self}: Starting...')
+        print('-> Requesting Flight')
         self.do_request_flight()
+        print('-> Selecting the best Flight')
         self._best_flight = self.get_best_flight()
+        print('-> Requesting the costs')
         self.do_request_cost()
+        print('-> Preparing data for Ingestor')
         self.build_data()
         self.finish()
 
@@ -76,34 +93,36 @@ class FlightFetcherSmiles():
         }
 
     def notify_ingestor(self, data):
+        print(' -> Notifying ingestor')
         retry = 0
         max_retries = 100
         done = False
         method = 'POST'
-        url = os.environ.get('INGEST_HOST') or self._ingestor
-        key = os.environ.get('INGEST_KEY')
+        url = self._ingestor_url
+        key = self._ingestor_key
         headers = {
             'INGEST_KEY': key,
         }
         while not done and retry < max_retries:
             try:
+                print('   -> Sending request')
                 response = requests.request(method, url, headers=headers, json=data)
                 response.raise_for_status()
                 # response_json = response.json()
             except Exception:
                 traceback.print_exc()
-                print(f'Retrying #{retry + 1}/{self._max_retries}')
+                print(f'    -> Retrying #{retry + 1}/{self._max_retries}')
                 time.sleep(5)
                 retry += 1
             else:
                 done = True
-                print('Ingestor Notified, bye!')
+                print('    -> Ingestor Notified, bye!')
 
     def finish(self):
         if self._ingestor:
             self.notify_ingestor(self._data)
         else:
-            print(f'{self._origin} -> {self._destination} for {self._provider}')
+            print(f'-> Ingestor disabled, displaying data instead')
             import pprint; pprint.pprint(self._data)
 
     def get_api_key(self):
@@ -117,22 +136,14 @@ class FlightFetcherSmiles():
         raise Exception(f'FetcherFailed({self._origin}>{self._destination}@{self._date}/{self._provider}): {reason}')
 
     def get_best_flight(self):
-        if not self._data_flight:
-            print('No data of flights, call the API first(do_request_flight)')
-            return None
         flights = []
         if len(self._data_flight['requestedFlightSegmentList']) > 1:
             self.failed('requestedFlightSegmentList lenght > 1: Not Implemented')
-        # bestPricing = self._data_flight['requestedFlightSegmentList'][0]['bestPricing']
         flightList = self._data_flight['requestedFlightSegmentList'][0]['flightList']
         for flight in flightList:
             for fare in flight['fareList']:
                 if fare['type'] != self._provider:
                     continue
-                # if flight["isAirlineTaxWithFlight"]:
-                #     tax_amount = fare['airlineTax'] - flight['airlineTax']
-                # else:
-                #     tax_amount = fare['airlineTax']
                 dd = {
                     'flight_uid': flight['uid'],
                     'stops': flight['stops'],
@@ -146,23 +157,9 @@ class FlightFetcherSmiles():
                     'fare_type': fare['type'],
                     'fare_uid': fare['uid'],
                     'base_amount_money': flight['airlineFlightMoney'],
-                    # 'tax_amount': tax_amount,
-                    # 'airport_origin': {
-                    #     'name': fare['departure']['airport']['name'],
-                    #     'code': fare['departure']['airport']['code'],
-                    # },
-                    # 'airport_destin': {
-                    #     'name': fare['arrival']['airport']['name'],
-                    #     'code': fare['arrival']['airport']['code'],
-                    # },
                     **fare,
                 }
                 flights.append(dd)
-        # return flights
-        # Get best price
-        # type_of_fare = bestPricing['fare']['type']
-        # qty_of_miles = bestPricing['miles']
-        # res = next((fare for fare in flights if fare['type'] == type_of_fare and fare['miles'] == qty_of_miles), {})
         best_price_found = sorted(flights, key=lambda x: x["miles"])[0]
         return best_price_found
 
@@ -175,7 +172,6 @@ class FlightFetcherSmiles():
         payload = ddata['payload']
 
         # Make the API request
-        print(f"Requesting Flights [{self._origin}->{self._destination}] @ {self._date} for {self._provider}")
         done = False
         retry = 0
         while not done and retry < self._max_retries:
@@ -197,7 +193,6 @@ class FlightFetcherSmiles():
         if not response_json['requestedFlightSegmentList'][0]['flightList']:
             self.failed('No data found in Smiles.')
 
-        print(response_json)
         self._data_flight = response_json
 
     def do_request_cost(self):
@@ -209,7 +204,6 @@ class FlightFetcherSmiles():
         payload = ddata['payload']
 
         # Make the API request
-        print(f"Requesting Costs [{self._origin}->{self._destination}] @ {self._date} for {self._provider}")
         done = False
         retry = 0
         while not done and retry < self._max_retries:
@@ -229,12 +223,6 @@ class FlightFetcherSmiles():
             self.failed('Max Retries exceeded: No data.')
 
         self._data_flight_cost = response_json
-
-    def parse_response_flight(self):
-        pass
-
-    def parse_response_cost(self):
-        pass
 
     def build_request_flight(self):
         URL_SINGLE = 'https://api-air-flightsearch-prd.smiles.com.br/v1/airlines/search?adults=1&cabinType=all&children=0&currencyCode=ARS&departureDate={departureDate}&destinationAirportCode={destinationAirportCode}&infants=0&isFlexibleDateChecked=false&originAirportCode={originAirportCode}&tripType=2&forceCongener=false&r=ar'
@@ -276,10 +264,3 @@ class FlightFetcherSmiles():
             'method': 'GET',
         }
         return request_data
-
-    def inform_endpoint(self):
-        pass
-
-    def inform_endpoint_error(self):
-        """ If _retries > _max_retries inform endpoint of that error """
-        pass
