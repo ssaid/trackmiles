@@ -1,9 +1,9 @@
-import { Navigate, useParams, useSearchParams } from "react-router-dom";
+import { Link, Navigate, useParams, useSearchParams } from "react-router-dom";
 import { PiAirplaneInFlightFill } from "react-icons/pi";
 import { Chart, ChartWrapperOptions } from 'react-google-charts';
 
 import { useFlightDetails } from "../hooks/useFlightDetail";
-import { useMemo } from "react";
+import { useMediaQuery } from "@mui/material";
 
 
 export const AnalyticsView = () => {
@@ -11,6 +11,8 @@ export const AnalyticsView = () => {
   const [searchParams] = useSearchParams();
   const origin = searchParams.get('origin');
   const destination = searchParams.get('destination');
+
+  const isMobile = useMediaQuery('(max-width: 640px)')
 
   if (!origin || !destination) {
     return <Navigate to="/" />
@@ -28,7 +30,7 @@ export const AnalyticsView = () => {
       { type: "date", id: "Date" },
       { type: "number", id: "Won/Loss" },
     ],
-    [new Date(2022, 3, 13), 37032],
+    [new Date(2022, 1, 1), 0],
     ...data.details.map(
       detail => [new Date(detail.flight_date), detail.miles]
     )
@@ -36,17 +38,37 @@ export const AnalyticsView = () => {
 
 
   const options: ChartWrapperOptions['options'] = {
-    
+    calendar: {
+      cellSize: isMobile ? 10 : 15,
+      dayOfWeekLabel: {
+        fontName: 'Poppins',
+        fontSize: 12,
+        bold: true,
+      },
+      dayOfWeekRightSpace: 10,
+      daysOfWeek: 'DLMMJVS',
+      monthLabel: {
+        fontName: 'Poppins',
+        fontSize: 16,
+        bold: true,
+      },
+      underMonthSpace: 10,
+      yearLabel: {
+        fontName: 'Poppins',
+
+      },
+    }
+
   }
 
 
 
   return (
     <main className='mx-auto dark:text-neutral-100 py-5 flex justify-center flex-col'>
-        <div className='h-[35%] w-screen bg-neutral-100 dark:bg-neutral-800'>
-          <h1 className="flex flex-col justify-end p-10 items-center h-full">
-            Milleros
-          </h1>
+        <div className="bg-neutral-100 dark:bg-neutral-800 flex flex-col p-5 justify-center dark:text-neutral-300 text-neutral-800">
+          <Link to='/'>
+            <h1 className="md:text-5xl text-4xl font-bold italic">Milleros</h1>
+          </Link>
         </div>
       <section>
         <div className="flex gap-4 sm:gap-5 justify-center p-5 items-center sm:flex-row flex-col">
@@ -63,14 +85,18 @@ export const AnalyticsView = () => {
           </p>
         </div>
       </section>
-      <section className="flex justify-center h-full border mt-5 p-5 overflow-auto min-w-[950px]">
-        <Chart
-          chartType="Calendar"
-          width="950px"
-          height="400px"
-          data={calendarData}
-          options={options}
-        />
+      <section className="flex justify-center">
+        <div className="p-5 overflow-x-auto h-full m-5">
+          <div className="h-full mt-5 p-5 sm:w-[925px] min-w-[650px]">
+            <Chart
+              chartType="Calendar"
+              width="100%"
+              height={ isMobile ? "250px" : "325px" }
+              data={calendarData}
+              options={options}
+            />
+          </div>
+        </div>
       </section>
 
     </main>

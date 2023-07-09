@@ -19,7 +19,7 @@ export function App() {
 
   return (
 
-    <div className="w-auto h-screen relative bg-neutral-100 dark:bg-neutral-800 font-poppins">
+    <div className="w-auto min-h-screen relative bg-neutral-100 dark:bg-neutral-800 font-poppins">
       <ToggleButton />
       <Outlet />
     </div>
