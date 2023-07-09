@@ -58,7 +58,7 @@ export const Calendar = ({ data }: CalendarProps) => {
     ...data.details.map(
       detail => [
         new Date(detail.flight_date), 
-        detail.miles, 
+        detail.porcentual, 
         ReactDOMServer.renderToString(<Tooltip detail={detail}/>),
       ]
     )
@@ -67,6 +67,13 @@ export const Calendar = ({ data }: CalendarProps) => {
 
   const options: ChartWrapperOptions['options'] = {
     tooltip: { isHtml: true },
+    colorAxis: {
+      colors: ['#00b894', '#e74c3c'],
+      // colors: ['#3498db', '#f39c12'],
+      // colors: ['#9b59b6', '#f1c40f'],
+      // colors: ['#1abc9c', '#e91e63'],
+      // colors: ['#333333', '#aaaaaa']
+    },
     legend: 'none',
     dataTable:{},
     calendar: {

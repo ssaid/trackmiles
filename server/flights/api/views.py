@@ -1,4 +1,4 @@
-from django.db.models import Prefetch, Subquery, OuterRef
+from django.db.models import Prefetch, Avg
 from rest_framework.views import APIView, Response
 from rest_framework import permissions, generics, pagination, status, filters, viewsets
 from rest_framework.response import Response
@@ -154,17 +154,24 @@ class FlightDetailView(APIView):
 
         pf_history = Prefetch('history', queryset=FlightHistory.objects.order_by('-created_at'))
 
-        for f in flights.prefetch_related(pf_history).all():
+        flights = flights.prefetch_related(pf_history).all()
+
+        newest_history = [ next((fh for fh in f.history.all())) for f in flights if f.history.exists()]
+        miles_mean = sum([h.miles for h in newest_history]) / len(newest_history)
+
+        for f in flights:
             # as the default ordering of flight history is -created_at,
             # we know the first record is the newest one
             history = next((fh for fh in f.history.all())) if f.history.exists() else None
             if history:
+                porcentual = int((history.miles - miles_mean) / miles_mean * 100)
                 info = FlightHistorySerializer(history)
                 data['details'].append(
                     {
                         'flight_date': f.flight_date,
-                        # 'provider': f.provider,
+                        'provider': f.provider.name if f.provider else None,
                         'external_link': f.external_link,
+                        'porcentual': porcentual,
                         **info.data,
                     }
                 )

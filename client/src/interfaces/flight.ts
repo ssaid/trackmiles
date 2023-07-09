@@ -8,6 +8,7 @@ export interface Flight {
 export interface Detail {
   flight_date: string
   provider: string
+  porcentual: number
   external_link: string
   money: number
   miles: number
