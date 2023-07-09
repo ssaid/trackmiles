@@ -11,6 +11,12 @@ export default {
       fontFamily: {
         'poppins': ['Poppins', 'sans-serif']
       },
+
+      colors: ({theme}) => ({
+        'button-bg-dark': theme('bg-orange-500'),
+
+      })
+      
     },
   },
   plugins: [],

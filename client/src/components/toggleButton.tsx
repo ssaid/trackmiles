@@ -6,7 +6,7 @@ export const ToggleButton = () => {
   const { theme, themeToggler } = useToggleTheme()
 
   return (
-    <div className='absolute right-5 top-5 transition duration-500 z-20'>
+    <div className='absolute right-5 top-5 transition-all duration-1000 z-50'>
       <div 
         className="flex items-center justify-center w-full mb-12"
       >
