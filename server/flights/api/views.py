@@ -243,7 +243,6 @@ class FlightDetailView(APIView):
         )
 
 
-        __import__('pdb').set_trace()
         history = FlightHistorySerializer(
             data={
                 'flight_id': flight.id,
@@ -252,7 +251,6 @@ class FlightDetailView(APIView):
             }
         )
 
-        __import__('pdb').set_trace()
         if history.is_valid():
             history.save()
             return Response(history.data, status=status.HTTP_201_CREATED)
