@@ -1,6 +1,5 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from flights import fetcher
 from flights.models import Flight, Preference
 from flights.tasks import process_costs
 from .utils.schedule_trace import schedule_trace

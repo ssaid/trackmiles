@@ -3,6 +3,7 @@ import concurrent.futures
 import requests
 import traceback
 import time
+import os
 
 
 class FlightFetcherSmiles():
@@ -57,11 +58,11 @@ class FlightFetcherSmiles():
         buy_url = self._build_buy_url()
 
         self._data = {
-            'total_miles': total_flight_and_tax_miles,
-            'total_amount': total_flight_and_tax_money,
-            'total_tax_miles': total_tax_miles,
-            'total_tax_money': total_tax_money,
-            'total_fare_clean': airline_fare_amount_wo_tax,
+            'miles': total_flight_and_tax_miles,
+            'money': total_flight_and_tax_money,
+            'tax_miles': total_tax_miles,
+            'tax_money': total_tax_money,
+            'fare_clean': airline_fare_amount_wo_tax,
             'departure_date': self._date,
             'airline_code': airline_code,
             'airline_name': airline_name,
@@ -69,12 +70,38 @@ class FlightFetcherSmiles():
             'stops': stops,
             'baggage': baggage,
             'provider': self._provider,
-            'buy_url': buy_url,
+            'external_link': buy_url,
+            'origin_code': self._origin,
+            'destination_code': self._destination,
         }
+
+    def notify_ingestor(self, data):
+        retry = 0
+        max_retries = 100
+        done = False
+        method = 'POST'
+        url = os.environ.get('INGEST_HOST') or self._ingestor
+        key = os.environ.get('INGEST_KEY')
+        headers = {
+            'INGEST_KEY': key,
+        }
+        while not done and retry < max_retries:
+            try:
+                response = requests.request(method, url, headers=headers, json=data)
+                response.raise_for_status()
+                # response_json = response.json()
+            except Exception:
+                traceback.print_exc()
+                print(f'Retrying #{retry + 1}/{self._max_retries}')
+                time.sleep(5)
+                retry += 1
+            else:
+                done = True
+                print('Ingestor Notified, bye!')
 
     def finish(self):
         if self._ingestor:
-            raise NotImplementedError
+            self.notify_ingestor(self._data)
         else:
             print(f'{self._origin} -> {self._destination} for {self._provider}')
             import pprint; pprint.pprint(self._data)
@@ -84,10 +111,10 @@ class FlightFetcherSmiles():
         return API_KEY
 
     def failed(self, reason):
+        reason = f"FetcherFailed({self._origin}>{self._destination}@{self._date}/{self._provider}): {reason}"
         if self._ingestor:
-            raise NotImplementedError
-        else:
-            raise Exception(f'FetcherFailed({self._origin}>{self._destination}@{self._date}/{self._provider}): {reason}')
+            self.notify_ingestor({'reason': reason, 'exception': True})
+        raise Exception(f'FetcherFailed({self._origin}>{self._destination}@{self._date}/{self._provider}): {reason}')
 
     def get_best_flight(self):
         if not self._data_flight:
