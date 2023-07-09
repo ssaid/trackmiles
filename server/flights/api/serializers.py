@@ -38,7 +38,7 @@ class CountrySerializer(serializers.ModelSerializer):
 
 
 class AirportSerializer(serializers.ModelSerializer):
-    
+
         class Meta:
             model = Airport
             fields = ['display_name', 'code']
@@ -91,7 +91,7 @@ class FlightHistorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FlightHistory
-        exclude = ['flight', 'id', 'airline']
+        exclude = ['flight', 'id', 'airline', 'provider']
 
 class FlightSerializer(serializers.ModelSerializer):
 
