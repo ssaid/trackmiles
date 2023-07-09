@@ -1,9 +1,8 @@
 import { Link, Navigate, useParams, useSearchParams } from "react-router-dom";
 import { PiAirplaneInFlightFill } from "react-icons/pi";
-import { Chart, ChartWrapperOptions } from 'react-google-charts';
 
 import { useFlightDetails } from "../hooks/useFlightDetail";
-import { useMediaQuery } from "@mui/material";
+import { Calendar } from "../components/analytics/calendar";
 
 
 export const AnalyticsView = () => {
@@ -12,7 +11,6 @@ export const AnalyticsView = () => {
   const origin = searchParams.get('origin');
   const destination = searchParams.get('destination');
 
-  const isMobile = useMediaQuery('(max-width: 640px)')
 
   if (!origin || !destination) {
     return <Navigate to="/" />
@@ -24,41 +22,6 @@ export const AnalyticsView = () => {
   if (isError) return <div>Error...</div>
 
   if (isLoading || !data) return <div>Loading...</div>
-
-  const calendarData = [
-    [
-      { type: "date", id: "Date" },
-      { type: "number", id: "Won/Loss" },
-    ],
-    ...data.details.map(
-      detail => [new Date(detail.flight_date), detail.miles]
-    )
-  ];
-
-
-  const options: ChartWrapperOptions['options'] = {
-    calendar: {
-      cellSize: isMobile ? 10 : 15,
-      dayOfWeekLabel: {
-        fontName: 'Poppins',
-        fontSize: 12,
-        bold: true,
-      },
-      dayOfWeekRightSpace: 10,
-      daysOfWeek: 'DLMMJVS',
-      monthLabel: {
-        fontName: 'Poppins',
-        fontSize: 16,
-        bold: true,
-      },
-      underMonthSpace: 10,
-      yearLabel: {
-        fontName: 'Poppins',
-
-      },
-    }
-
-  }
 
 
 
@@ -84,19 +47,8 @@ export const AnalyticsView = () => {
           </p>
         </div>
       </section>
-      <section className="flex justify-center">
-        <div className="p-5 overflow-x-auto h-full m-5">
-          <div className="h-full mt-5 p-5 sm:w-[925px] min-w-[650px]">
-            <Chart
-              chartType="Calendar"
-              width="100%"
-              height={ isMobile ? "250px" : "325px" }
-              data={calendarData}
-              options={options}
-            />
-          </div>
-        </div>
-      </section>
+
+      <Calendar data={data!} />
 
     </main>
   )
