@@ -121,6 +121,8 @@ data:
   DJANGO_CELERY_RESULT_BACKEND: redis://redis:6379/0
   CELERY_BROKER_URL: redis://redis:6379/0
   CELERY_RESULT_BACKEND: redis://redis:6379/0
+  INGEST_HOST=http://api.test.milleros.com.ar/api/v1/flights/
+  INGEST_KEY=asd
 ---
 apiVersion: apps/v1
 kind: Deployment
