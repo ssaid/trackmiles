@@ -23,7 +23,7 @@ const Tooltip = ({ detail }: TooltipProps) => (
     { detail.miles ? <span className="flex items-center gap-1"><ImPriceTags /> Millas: { detail.miles.toLocaleString('es') }</span> : ''}
     { detail.money ? <span className="flex items-center gap-1"><MdOutlineAttachMoney /> Precio: { detail.money.toLocaleString('es') }</span> : ''}
     { detail.stops ? <span className="flex items-center gap-1"><MdAirlineStops /> Escalas: { detail.stops }</span> : ''}
-    { detail.duration ? <span className="flex items-center gap-1"><BsClockHistory /> Duracion: { detail.duration }</span> : ''}
+    { detail.duration ? <span className="flex items-center gap-1"><BsClockHistory /> Duracion: { detail.duration }h</span> : ''}
     { detail.seats ? <span className="flex items-center gap-1"><MdAirlineSeatReclineNormal /> Asientos: { detail.seats }</span> : ''}
     { <span className="flex items-center gap-1"><LuBaggageClaim /> Equipaje: { detail.baggage ? 'Si' : 'No'}</span> }
   </div>
@@ -40,7 +40,7 @@ export const Calendar = ({ data }: CalendarProps) => {
       callback: (props) => {
         const chart = props.chartWrapper.getChart()
         const [selection] = chart.getSelection()
-        if (!selection.row) return
+        if (!selection?.row) return
         console.log(`Origen: ${data.origin}`)
         console.log(`Destino: ${data.dest}`)
         console.log(`Fecha: ${data.details[selection.row].flight_date}`)
