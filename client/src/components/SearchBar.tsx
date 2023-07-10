@@ -78,13 +78,13 @@ export const SearchBar = () => {
         isOptionEqualToValue={(option, value) => option === value}
         options={origins!}
         sx={{ minWidth: 300 }}
-        className="bg-neutral-100"
         onInputChange={handleOriginChange}
         value={origin}
         renderInput={(params) => 
           <TextField 
             {...params} 
             label="Origen" 
+            className="bg-neutral-100"
           />
         }
       />

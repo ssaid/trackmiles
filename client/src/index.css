@@ -21,4 +21,13 @@
 ::-webkit-scrollbar-thumb:hover {
   background-color: #555;
 }
-
+.css-vwquso-MuiFormLabel-root-MuiInputLabel-root{
+  background-color: rgb(245, 245, 245);
+  padding: 0 5px !important;
+  border-radius: 5% !important;
+}
+.css-vwquso-MuiFormLabel-root-MuiInputLabel-root.Mui-focused{
+  background-color: rgb(245, 245, 245);
+  padding: 0 5px;
+  border-radius: 5% !important;
+}
