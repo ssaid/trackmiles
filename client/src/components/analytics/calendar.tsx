@@ -7,7 +7,6 @@ import { MdAirlineSeatReclineNormal, MdAirlineStops, MdOutlineAttachMoney } from
 import { BsCalendarDate, BsClockHistory } from "react-icons/bs";
 import { LuBaggageClaim } from "react-icons/lu";
 import { ImPriceTags } from "react-icons/im";
-import { useEffect } from "react";
 
 
 type CalendarProps = {
@@ -35,7 +34,6 @@ export const Calendar = ({ data }: CalendarProps) => {
 
   const isMobile = useMediaQuery('(max-width: 640px)')
 
-
   const chartEvents: ReactGoogleChartEvent[] = [
     {
       eventName: 'select',
@@ -48,6 +46,27 @@ export const Calendar = ({ data }: CalendarProps) => {
         console.log(`Fecha: ${data.details[selection.row].flight_date}`)
       }
     },
+    {
+      eventName: 'ready',
+      callback : ( props ) => {
+        
+        const chart = props.chartWrapper.getChart()
+        //@ts-ignore
+        const textElements = chart.getContainer().getElementsByTagName('text')
+        //@ts-ignore
+        const barElements = chart.getContainer().getElementsByTagName('path')
+
+        if (textElements.length > 1) {
+          textElements[1].setAttribute('display', 'none')
+          textElements[2].setAttribute('display', 'none')
+        }
+
+        if (barElements.length > 1) {
+          barElements[1].setAttribute('display', 'none')
+          barElements[2].setAttribute('display', 'none')
+        }
+      }
+    }
   ];
 
   const calendarData = [
@@ -69,7 +88,6 @@ export const Calendar = ({ data }: CalendarProps) => {
   const options: ChartWrapperOptions['options'] = {
     tooltip: { isHtml: true },
     colorAxis: {
-      legend: 'vuelos',
       colors: ['#00b894', '#e74c3c'],
       // colors: ['#3498db', '#f39c12'],
       // colors: ['#9b59b6', '#f1c40f'],
@@ -77,8 +95,8 @@ export const Calendar = ({ data }: CalendarProps) => {
       // colors: ['#333333', '#aaaaaa']
     },
     legend: 'none',
-    dataTable:{},
     calendar: {
+      legend: 'none',
       cellSize: isMobile ? 10 : 15,
       dayOfWeekLabel: {
         fontName: 'Poppins',
@@ -99,7 +117,6 @@ export const Calendar = ({ data }: CalendarProps) => {
       },
     },
     fontName: 'Poppins',
-
 
   }
 
