@@ -62,8 +62,8 @@ export const Calendar = ({ data }: CalendarProps) => {
         }
 
         if (barElements.length > 1) {
-          barElements[0].setAttribute('display', 'none')
-          barElements[1].setAttribute('display', 'none')
+          barElements[2].setAttribute('display', 'none')
+          barElements[3].setAttribute('display', 'none')
         }
       }
     }
