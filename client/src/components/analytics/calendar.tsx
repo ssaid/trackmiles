@@ -7,6 +7,7 @@ import { MdAirlineSeatReclineNormal, MdAirlineStops, MdOutlineAttachMoney } from
 import { BsCalendarDate, BsClockHistory } from "react-icons/bs";
 import { LuBaggageClaim } from "react-icons/lu";
 import { ImPriceTags } from "react-icons/im";
+import { useEffect } from "react";
 
 
 type CalendarProps = {
@@ -25,7 +26,7 @@ const Tooltip = ({ detail }: TooltipProps) => (
     {  detail.stops ? <span className="flex items-center gap-1"><MdAirlineStops /> Escalas: { detail.stops }</span> : ''}
     {  detail.duration ? <span className="flex items-center gap-1"><BsClockHistory /> Duracion: { detail.duration }</span> : ''}
     {  detail.seats ? <span className="flex items-center gap-1"><MdAirlineSeatReclineNormal /> Asientos: { detail.seats }</span> : ''}
-    {  detail.baggage ? 'Si' : 'No'? <span className="flex items-center gap-1"><LuBaggageClaim /> Equipaje: { detail.baggage ? 'Si' : 'No'}</span> : ''}
+    {  detail.baggage ? <span className="flex items-center gap-1"><LuBaggageClaim /> Equipaje: { detail.baggage ? 'Si' : 'No'}</span> : ''}
   </div>
 
 )
@@ -68,6 +69,7 @@ export const Calendar = ({ data }: CalendarProps) => {
   const options: ChartWrapperOptions['options'] = {
     tooltip: { isHtml: true },
     colorAxis: {
+      legend: 'vuelos',
       colors: ['#00b894', '#e74c3c'],
       // colors: ['#3498db', '#f39c12'],
       // colors: ['#9b59b6', '#f1c40f'],
@@ -100,8 +102,6 @@ export const Calendar = ({ data }: CalendarProps) => {
 
 
   }
-
-
 
   return (
 
