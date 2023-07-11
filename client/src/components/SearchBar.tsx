@@ -1,7 +1,9 @@
 import { Autocomplete, Skeleton, Stack, TextField } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
+import { PiAirplaneInFlightFill } from "react-icons/pi"
 import { Link, useNavigate } from "react-router-dom"
 import { useAirports } from "../hooks/useAirports"
+import { Select } from './select'
 
 
 export const SearchBar = () => {
@@ -15,18 +17,18 @@ export const SearchBar = () => {
   const [ destination, setDestination ] = useState<string | null>(null)
 
   const origins = useMemo(
-    () => data?.map(({airport_origin}) => airport_origin.display_name)
+    () => data?.map(({airport_origin}) => ({ label: airport_origin.display_name, value: airport_origin.code }))
   , [data])
 
   const getDestinations = useCallback((origin: string | null) => {
     return data
-      ?.find(ap => ap.airport_origin.display_name === origin)
-      ?.airport_destinations?.map(dest => dest.display_name) ?? []
+      ?.find(ap => ap.airport_origin.code === origin)
+      ?.airport_destinations?.map(dest => ({label: dest.display_name, value: dest.code})) ?? []
 
   }, [data])
 
-  const handleOriginChange = (_: any, newValue: string) => {
-    if (!getDestinations(newValue).includes(destination!)) setDestination(null)
+  const handleOriginChange = (newValue: string) => {
+    if (!getDestinations(newValue).some(d => d.value == newValue)) setDestination(null)
     setOrigin(newValue)
   }
 
@@ -40,8 +42,8 @@ export const SearchBar = () => {
 
   const handleSubmit = () => {
     const params = new URLSearchParams()
-    params.append('origin', getAirportCode(origin!))
-    params.append('destination', getAirportCode(destination!))
+    params.append('origin', origin)
+    params.append('destination', destination)
 
     navigate(`/analytics?${params.toString()}`)
 
@@ -71,38 +73,61 @@ export const SearchBar = () => {
   return (
 
     <div 
-      className="flex flex-col lg:w-[90%] w-[95%] md:flex-row justify-center align-center gap-3 bg-neutral-100 dark:bg-neutral-800 p-8 rounded border-2 border-zinc-200 dark:border-zinc-700"
+      className="flex flex-col lg:w-[90%] w-[95%] md:flex-row justify-center items-center gap-3 bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-300 p-8 rounded border-2 border-zinc-200 dark:border-zinc-700"
     >
-      <Autocomplete
-        disablePortal
-        isOptionEqualToValue={(option, value) => option === value}
-        options={origins!}
-        sx={{ minWidth: 300 }}
-        onInputChange={handleOriginChange}
-        value={origin}
-        renderInput={(params) => 
-          <TextField 
-            {...params} 
-            label="Origen" 
-            className="bg-neutral-100"
-          />
-        }
-      />
-      <Autocomplete
-        disablePortal
+      {
+        /*
+         
+        <Autocomplete
+          disablePortal
+          isOptionEqualToValue={(option, value) => option === value}
+          options={origins!}
+          sx={{ minWidth: 300 }}
+          onInputChange={handleOriginChange}
+          value={origin}
+          renderInput={(params) => 
+            <TextField 
+              {...params} 
+              label="Origen" 
+              className="bg-neutral-100"
+            />
+          }
+        />
+          <Autocomplete
+            disablePortal
         options={getDestinations(origin)}
-        isOptionEqualToValue={(option, value) => option === value}
-        value={destination}
-        onChange={(_, newValue) => setDestination(newValue)}
-        sx={{ minWidth: 300 }}
-        className="bg-neutral-100"
-        renderInput={(params) => <TextField {...params} label="Destino" />}
+              isOptionEqualToValue={(option, value) => option === value}
+              value={destination}
+              onChange={(_, newValue) => setDestination(newValue)}
+      sx={{ minWidth: 300 }}
+      className="bg-neutral-100"
+      renderInput={(params) => <TextField {...params} label="Destino" />}
       />
+         */
+      }
 
+      <div className="md:max-w-[325px] w-full">
+        <Select 
+          onChange={handleOriginChange}
+          options={origins}
+          placeholder='Origen'
+        />
+      </div>
+
+      <PiAirplaneInFlightFill className="w-7 h-7 flex-shrink-0"/>
+
+      <div className="md:max-w-[325px] w-full">
+        <Select 
+          disabled={!origin}
+          onChange={setDestination}
+          options={getDestinations(origin)}
+          placeholder='Destino'
+        />
+      </div>
 
       <button
         disabled={!origin || !destination}
-        className="bg-zinc-600 dark:bg-orange-500 font-semibold text-neutral-100 rounded p-2 px-4 disabled:bg-zinc-400 disabled:text-zinc-200 dark:disabled:bg-orange-400 transition-all"
+        className="bg-zinc-600 w-full md:w-fit dark:bg-orange-500 font-semibold text-neutral-100 rounded p-2 px-4 disabled:bg-zinc-400 disabled:text-zinc-200 dark:disabled:bg-orange-400 transition-all"
         onClick={handleSubmit}
       >
         Buscar

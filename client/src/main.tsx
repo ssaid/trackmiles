@@ -4,20 +4,14 @@ import './index.css'
 
 import { RouterProvider } from 'react-router-dom'
 import { router } from './router'
-import { CssBaseline, ThemeProvider } from '@mui/material'
-import theme from './theme'
 import { QueryClient, QueryClientProvider } from 'react-query'
-import { ErrorBoundary } from 'react-error-boundary'
 
 const queryClient = new QueryClient()
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={ theme }>
-        <CssBaseline />
-        <RouterProvider router={ router } />
-      </ThemeProvider>
+      <RouterProvider router={ router } />
     </QueryClientProvider>
   </React.StrictMode>,
 )
