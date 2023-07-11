@@ -10,7 +10,7 @@ class Airport(models.Model):
     code = models.SlugField(max_length=10, unique=True, null=True)
     city = models.CharField(max_length=64)
     country = models.ForeignKey('Country', on_delete=models.PROTECT, related_name="airports", null=True)
-    region = models.ForeignKey('Region', on_delete=models.SET_NULL, related_name="airports", null=True)
+    # region = models.ForeignKey('Region', on_delete=models.SET_NULL, related_name="airports", null=True)
 
     display_name = models.CharField(max_length=255)
     display_name_long = models.CharField(max_length=255)
@@ -19,10 +19,11 @@ class Airport(models.Model):
         ordering = ['country__name', 'name']
 
     def __str__(self):
-        return '[%s] %s, %s' % (
+        return '[%s] %s, %s, %s' % (
             self.code,
             self.name,
             self.city,
+            self.country and self.country.name or '-',
         )
 
 
@@ -47,6 +48,7 @@ class AirLine(models.Model):
 class Region(models.Model):
 
     name = models.SlugField(max_length=64)
+    airports = models.ManyToManyField(Airport, related_name="regions")
 
     def __str__(self):
         return f'{self.name}'

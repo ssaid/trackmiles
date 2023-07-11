@@ -4,7 +4,6 @@ from .models import User, Preference, Region, WaitingList, Provider, Flight, Fli
 
 admin.site.register(User, UserAdmin)
 admin.site.register(WaitingList)
-# admin.site.register(FlightHistory)
 
 
 class ProviderAdmin(admin.ModelAdmin):
@@ -63,9 +62,10 @@ class CountryAdmin(admin.ModelAdmin):
 
 
 class RegionAdmin(admin.ModelAdmin):
-    fields = ['name']
+    fields = ['name', 'airports']
     search_fields = ['name']
     # inlines = [AirportInline]
+    filter_horizontal = ['airports']
 
 
 class AirportAdmin(admin.ModelAdmin):
