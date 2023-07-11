@@ -2,11 +2,10 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from datetime import datetime, timedelta
 from itertools import product
+from django.core.exceptions import ValidationError
 
 
 class Airport(models.Model):
-
-
     name = models.CharField(max_length=255)
     code = models.SlugField(max_length=10, unique=True, null=True)
     city = models.CharField(max_length=64)
@@ -20,32 +19,46 @@ class Airport(models.Model):
         ordering = ['country__name', 'name']
 
     def __str__(self):
-        return '%s [%s]' % (self.code, self.country and self.country.code or '-')
+        return '[%s] %s, %s' % (
+            self.code,
+            self.name,
+            self.city,
+        )
+
 
 class Country(models.Model):
 
     name = models.CharField(max_length=64)
     code = models.SlugField(max_length=10, unique=True, null=True)
 
-
     def __str__(self):
         return self.name
+
 
 class AirLine(models.Model):
 
     name = models.CharField(max_length=64)
     code = models.SlugField(max_length=10, unique=True)
 
+    def __str__(self):
+        return f'[{self.code}] {self.name}'
+
 
 class Region(models.Model):
 
     name = models.SlugField(max_length=64)
+
+    def __str__(self):
+        return f'{self.name}'
 
 
 class Provider(models.Model):
 
     name = models.CharField(max_length=64)
     base_url = models.URLField(null=True, blank=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Flight(models.Model):
@@ -65,6 +78,8 @@ class Flight(models.Model):
     class Meta:
         ordering = ['-flight_date']
 
+    def __str__(self):
+        return '[%s] %s -> %s' % (self.flight_date, self.origin, self.destination)
 
     def get_avg_last_six_months(self):
         delta_date = datetime.now() - timedelta(days=180)
@@ -84,6 +99,7 @@ class Flight(models.Model):
 
     def get_best_price_by_miles(self):
         return self.costs.filter(flight_date__gte=datetime.now()).order_by('history__miles').first()
+
 
 class FlightHistory(models.Model):
 
@@ -138,6 +154,32 @@ class Preference(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def clean(self):
+        airports = any([self.airport_origin, self.airport_destination])
+        regions = any([self.region_origin, self.region_destination])
+        countries = any([self.country_origin, self.country_destination])
+        all_airports = all([self.airport_origin, self.airport_destination])
+        all_regions = all([self.region_origin, self.region_destination])
+        all_countries = all([self.country_origin, self.country_destination])
+        if airports and not (regions or countries) and all_airports:
+            return True
+        elif regions and not (airports or countries) and all_regions:
+            return True
+        elif countries and not (airports or regions) and all_countries:
+            return True
+        else:
+            raise ValidationError('Improperly configured! HINT: Configure the airports OR the region OR the countries')
+
+    def __str__(self):
+        if self.airport_origin and self.airport_destination:
+            return '[AIRPORT] %s -> %s' % (self.airport_origin.code, self.airport_destination.code)
+        elif self.country_origin and self.country_destination:
+            return '[COUNTRY] %s -> %s' % (self.country_origin, self.country_destination)
+        elif self.region_origin and self.region_destination:
+            return '[REGION.] %s -> %s' % (self.region_origin, self.region_destination)
+        else:
+            return '-'
 
     @classmethod
     def get_all_routes(self):

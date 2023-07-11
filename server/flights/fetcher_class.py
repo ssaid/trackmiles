@@ -24,6 +24,7 @@ class FlightFetcherSmiles():
             self._ingestor_key = os.environ.get('INGEST_KEY')
             if not self._ingestor_key or not self._ingestor_url:
                 raise Exception('Ensure INGEST_HOST and INGEST_KEY are properly set')
+        self._disabled = os.environ.get('FETCHER_DISABLED')
         print(f'{self}: Ready')
 
     def __repr__(self):
@@ -34,6 +35,9 @@ class FlightFetcherSmiles():
         return self.__repr__()
 
     def start(self):
+        if self._disabled:
+            print(f'{self}: Is disabled by FETCHER_DISABLED...')
+            return True
         print(f'{self}: Requesting Flights...')
         self.do_request_flight()
         print(f'{self}: Selecting lowest price...')
