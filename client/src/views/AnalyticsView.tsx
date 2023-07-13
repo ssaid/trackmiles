@@ -4,6 +4,7 @@ import { PiAirplaneInFlightFill } from "react-icons/pi";
 import { useFlightDetails } from "../hooks/useFlightDetail";
 import { Calendar } from "../components/analytics/calendar";
 import { Spinner } from "../components/spinner";
+import { Combo } from "../components/analytics/combo";
 
 
 export const AnalyticsView = () => {
@@ -51,6 +52,7 @@ export const AnalyticsView = () => {
       </section>
 
       <Calendar data={data!} />
+      <Combo origin={origin} destination={destination} />
 
     </main>
   )

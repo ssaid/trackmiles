@@ -156,15 +156,27 @@ class FlightDetailView(APIView):
 
         flights = flights.prefetch_related(pf_history).all()
 
+        import statistics
+
         newest_history = [ next((fh for fh in f.history.all())) for f in flights if f.history.exists()]
-        miles_mean = sum([h.miles for h in newest_history]) / len(newest_history)
+        miles_data = [h.miles for h in newest_history]
+
+        miles_mean = sum(miles_data) / len(miles_data)
+        miles_median = statistics.median(miles_data)
+
+        data['miles_mean'] = int(miles_mean)
+        data['miles_median'] = int(miles_median)
+
+        data['miles_max'] = int(max(miles_data))
+        data['miles_min'] = int(min(miles_data))
 
         for f in flights:
             # as the default ordering of flight history is -created_at,
             # we know the first record is the newest one
             history = next((fh for fh in f.history.all())) if f.history.exists() else None
             if history:
-                porcentual = int((history.miles - miles_mean) / miles_mean * 100)
+                porcentual = int((history.miles - miles_median) / miles_median * 100)
+                # porcentual = int((history.miles - miles_mean) / miles_mean * 100)
                 info = FlightHistorySerializer(history)
                 data['details'].append(
                     {

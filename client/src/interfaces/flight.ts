@@ -2,6 +2,10 @@
 export interface Flight {
   origin: string
   dest: string
+  miles_median: number
+  miles_max: number
+  miles_min: number
+  miles_mean: number
   details: Detail[]
 }
 

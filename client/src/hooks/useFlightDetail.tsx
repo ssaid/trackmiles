@@ -6,8 +6,8 @@ import { Flight } from "../interfaces"
 type FlightDetailProps = {
   origin: string
   destination: string
-  from_date?: Date
-  to_date?: Date
+  from_date?: string
+  to_date?: string
 }
 
 const getFlightDetail = async (props: FlightDetailProps)  => {
@@ -18,11 +18,11 @@ const getFlightDetail = async (props: FlightDetailProps)  => {
   params.append('destination', props.destination)
 
   if (props.from_date) {
-    params.append('from_date', props.from_date.toISOString())
+    params.append('from_date', props.from_date)
   }
 
   if (props.to_date) {
-    params.append('to_date', props.to_date.toISOString())
+    params.append('to_date', props.to_date)
   }
 
   const { data } = await milleros_api.get<Flight>(`/flights/`, { params })
