@@ -12,7 +12,11 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: ["push", "gcr.io/$PROJECT_ID/client:$SHORT_SHA"]
 - name: 'gcr.io/cloud-builders/docker'
+  args: ["push", "gcr.io/$PROJECT_ID/client:latest"]
+- name: 'gcr.io/cloud-builders/docker'
   args: ["push", "gcr.io/$PROJECT_ID/server:$SHORT_SHA"]
+- name: 'gcr.io/cloud-builders/docker'
+  args: ["push", "gcr.io/$PROJECT_ID/server:latest"]
 # [START cloudbuild-trigger-cd]
 # This step clones the milleros-env repository
 - name: 'gcr.io/cloud-builders/gcloud'
