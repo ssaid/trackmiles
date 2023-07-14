@@ -123,8 +123,8 @@ export const Calendar = ({ data }: CalendarProps) => {
   return (
 
       <section className="flex justify-center">
-        <div className="p-5 overflow-x-auto h-full m-5 sm:w-[1050px] flex justify-center">
-          <div className="h-full mt-5 p-5 sm:w-[925px] w-[650px]">
+        <div className="p-5 overflow-x-auto h-full m-5 max-w-screen">
+          <div className="mt-5 mx-auto p-5 sm:w-[925px] w-[650px]">
             <Chart
               chartType="Calendar"
               width="100%"
