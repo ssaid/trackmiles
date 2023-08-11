@@ -1,4 +1,4 @@
-import { useMediaQuery } from "@mui/material";
+import { Stack, useMediaQuery } from "@mui/material";
 import { Chart, ChartWrapperOptions, ReactGoogleChartEvent } from 'react-google-charts';
 import ReactDOMServer from 'react-dom/server';
 
@@ -122,22 +122,26 @@ export const Calendar = ({ data }: CalendarProps) => {
 
   return (
 
-      <section className="flex justify-center">
-        <div className="p-5 overflow-x-auto h-full m-5 max-w-screen">
-          <div className="mt-5 mx-auto p-5 sm:w-[925px] w-[650px]">
-            <Chart
-              chartType="Calendar"
-              width="100%"
-              height={ isMobile ? "250px" : "325px" }
-              data={calendarData}
-              options={options}
-              chartEvents={chartEvents}
-            />
+    <Stack>
+      <Stack 
+        overflow-x-auto
+        m={5}
+        className="p-5 overflow-x-auto h-full m-5 max-w-screen"
+      >
+        <div className="mt-5 mx-auto p-5 sm:w-[925px] w-[650px]">
+          <Chart
+            chartType="Calendar"
+            width="100%"
+            height={ isMobile ? "250px" : "325px" }
+            data={calendarData}
+            options={options}
+            chartEvents={chartEvents}
+          />
 
-          </div>
         </div>
-      </section>
-    
+      </Stack>
+    </Stack>
+
 
   )
 }

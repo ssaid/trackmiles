@@ -45,31 +45,28 @@ export const AnalyticsView = () => {
           </Link>
         </Typography>
       </Stack>
-      <section>
-        <Stack 
-          direction="row"
-          gap={2}
-          alignItems="center"
-          justifyContent="center"
+      <Stack 
+        direction="row"
+        gap={2}
+        alignItems="center"
+        justifyContent="center"
+      >
+        <Paper 
+          sx={{
+            p: 2,
+          }}
         >
-          <Paper 
-            sx={{
-              p: 2,
-            }}
-          >
-            {data.origin}
-          </Paper>
-          <PiAirplaneInFlightFill className="w-7 h-7"/>
-          <Paper 
-            sx={{
-              p: 2,
-            }}
-            // className='text-lg font-semibold dark:bg-orange-500 bg-zinc-600 p-3 px-5 rounded-md text-neutral-100'
-          >
-            {data.dest}
-          </Paper>
-        </Stack>
-      </section>
+          {data.origin}
+        </Paper>
+        <PiAirplaneInFlightFill className="w-7 h-7"/>
+        <Paper 
+          sx={{
+            p: 2,
+          }}
+        >
+          {data.dest}
+        </Paper>
+      </Stack>
 
       <Calendar data={data!} />
       <Combo origin={origin} destination={destination} />
