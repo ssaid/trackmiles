@@ -1,0 +1,32 @@
+name: Kubernetes Deployment
+
+on:
+  push:
+    branches:
+      - development  # Change this to the branch you want to trigger deployments from
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Kubernetes
+        uses: azure/setup-kubernetes@v1
+        with:
+          kubeconfig: ${{ secrets.KUBE_CONFIG_DATA }}  # Add your Kubernetes configuration as a secret
+
+      - name: Build and Deploy
+        env:
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          # Build your Docker image (modify this as needed)
+          docker build -t my-image:$IMAGE_TAG .
+
+          # Load the image into the cluster
+          kind load docker-image my-image:$IMAGE_TAG --name my-cluster
+
+          # Apply your Kubernetes manifests (modify this as needed)
+          kubectl apply -f path/to/your/kubernetes/manifests
