@@ -1,9 +1,7 @@
-import { Autocomplete, Skeleton, Stack, TextField } from "@mui/material"
+import { Autocomplete, Button, Paper, Skeleton, Stack, TextField } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
-import { PiAirplaneInFlightFill } from "react-icons/pi"
 import { Link, useNavigate } from "react-router-dom"
 import { useAirports } from "../hooks/useAirports"
-import { Select } from './select'
 
 
 export const SearchBar = () => {
@@ -17,18 +15,18 @@ export const SearchBar = () => {
   const [ destination, setDestination ] = useState<string | null>(null)
 
   const origins = useMemo(
-    () => data?.map(({airport_origin}) => ({ label: airport_origin.display_name, value: airport_origin.code }))
+    () => data?.map(({airport_origin}) => airport_origin.display_name)
   , [data])
 
   const getDestinations = useCallback((origin: string | null) => {
     return data
-      ?.find(ap => ap.airport_origin.code === origin)
-      ?.airport_destinations?.map(dest => ({label: dest.display_name, value: dest.code})) ?? []
+      ?.find(ap => ap.airport_origin.display_name === origin)
+      ?.airport_destinations?.map(dest => dest.display_name) ?? []
 
   }, [data])
 
-  const handleOriginChange = (newValue: string) => {
-    if (!getDestinations(newValue).some(d => d.value == newValue)) setDestination(null)
+  const handleOriginChange = (_: any, newValue: string) => {
+    if (!getDestinations(newValue).includes(destination!)) setDestination(null)
     setOrigin(newValue)
   }
 
@@ -42,8 +40,8 @@ export const SearchBar = () => {
 
   const handleSubmit = () => {
     const params = new URLSearchParams()
-    params.append('origin', origin)
-    params.append('destination', destination)
+    params.append('origin', getAirportCode(origin!))
+    params.append('destination', getAirportCode(destination!))
 
     navigate(`/analytics?${params.toString()}`)
 
@@ -72,42 +70,49 @@ export const SearchBar = () => {
 
   return (
 
-    <Stack>
-              <Autocomplete
-          disablePortal
-          isOptionEqualToValue={(option, value) => option === value}
-          options={origins!}
-          sx={{ minWidth: 300 }}
-          onInputChange={handleOriginChange}
-          value={origin}
-          renderInput={(params) => 
-            <TextField 
-              {...params} 
-              label="Origen" 
-              className="bg-neutral-100"
-            />
-          }
-        />
-          <Autocomplete
-            disablePortal
+    <Paper
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 2,
+        p: 2,
+        minWidth: 300,
+      }}
+    >
+      <Autocomplete
+        disablePortal
+        isOptionEqualToValue={(option, value) => option === value}
+        options={origins!}
+        sx={{ minWidth: 300 }}
+        onInputChange={handleOriginChange}
+        value={origin}
+        renderInput={(params) => 
+          <TextField 
+            {...params} 
+            label="Origen" 
+          />
+        }
+      />
+      <Autocomplete
+        disablePortal
         options={getDestinations(origin)}
-              isOptionEqualToValue={(option, value) => option === value}
-              value={destination}
-              onChange={(_, newValue) => setDestination(newValue)}
-      sx={{ minWidth: 300 }}
-      className="bg-neutral-100"
-      renderInput={(params) => <TextField {...params} label="Destino" />}
+        isOptionEqualToValue={(option, value) => option === value}
+        value={destination}
+        onChange={(_, newValue) => setDestination(newValue)}
+        sx={{ minWidth: 300 }}
+        renderInput={(params) => <TextField {...params} label="Destino" />}
       />
 
 
-
-      <button
+      <Button
         disabled={!origin || !destination}
-        className="bg-zinc-600 w-full md:w-fit dark:bg-orange-500 font-semibold text-neutral-100 rounded p-2 px-4 disabled:bg-zinc-400 disabled:text-zinc-200 dark:disabled:bg-orange-400 transition-all"
         onClick={handleSubmit}
+        variant="contained"
+        sx={{ width: '100%', height: '100%' }}
+        
       >
         Buscar
-      </button>
-    </Stack>
+      </Button>
+    </Paper>
   )
 }
