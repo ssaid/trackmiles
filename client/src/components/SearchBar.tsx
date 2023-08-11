@@ -1,4 +1,4 @@
-import { Autocomplete, Button, Paper, Skeleton, Stack, TextField } from "@mui/material"
+import { Autocomplete, Box, Button, Paper, Skeleton, Stack, TextField } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { useAirports } from "../hooks/useAirports"
@@ -69,50 +69,80 @@ export const SearchBar = () => {
 
 
   return (
-
-    <Paper
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 2,
-        p: 2,
-        minWidth: 300,
-      }}
+    <Box
+      display="flex"
+      justifyContent="center"
+      height='150px'
+      width='100%'
+      position="relative"
     >
-      <Autocomplete
-        disablePortal
-        isOptionEqualToValue={(option, value) => option === value}
-        options={origins!}
-        sx={{ minWidth: 300 }}
-        onInputChange={handleOriginChange}
-        value={origin}
-        renderInput={(params) => 
-          <TextField 
-            {...params} 
-            label="Origen" 
-          />
-        }
-      />
-      <Autocomplete
-        disablePortal
-        options={getDestinations(origin)}
-        isOptionEqualToValue={(option, value) => option === value}
-        value={destination}
-        onChange={(_, newValue) => setDestination(newValue)}
-        sx={{ minWidth: 300 }}
-        renderInput={(params) => <TextField {...params} label="Destino" />}
-      />
-
-
-      <Button
-        disabled={!origin || !destination}
-        onClick={handleSubmit}
-        variant="contained"
-        sx={{ width: '100%', height: '100%' }}
-        
+      <Box
+        top={-10}
+        position="absolute"
+        height='200px'
+        width='100%'
+        bgcolor='background.paper'
+        sx={{
+          transform: 'skew(0deg, -2deg);',
+        }}
+      ></Box>
+      <Paper
+        sx={{
+          p: 2,
+          position: 'relative',
+          height:'fit-content',
+          top: -40,
+          minWidth: { xs: '90%', lg: 900 },
+        }}
       >
-        Buscar
-      </Button>
-    </Paper>
+        <Stack
+          alignItems='center'
+          gap={2}
+          // flexWrap= 'wrap'
+          direction={{ xs: 'column', sm: 'row' }}
+        >
+          <Autocomplete
+            disablePortal
+            isOptionEqualToValue={(option, value) => option === value}
+            options={origins!}
+            fullWidth
+            // sx={{ minWidth: 250, width: '100%' }}
+            onInputChange={handleOriginChange}
+            value={origin}
+            renderInput={(params) => 
+              <TextField 
+                {...params} 
+                label="Origen" 
+              />
+            }
+          />
+          <Autocomplete
+            disablePortal
+            options={getDestinations(origin)}
+            isOptionEqualToValue={(option, value) => option === value}
+            value={destination}
+            onChange={(_, newValue) => setDestination(newValue)}
+            fullWidth
+            // sx={{ width: '100%' }}
+            renderInput={(params) => <TextField {...params} label="Destino" />}
+          />
+
+
+          <Button
+            disabled={!origin || !destination}
+            onClick={handleSubmit}
+            variant="contained"
+            sx={{ 
+              height: 55,
+              width: { xs: '100%', sm: 'fit-content'},
+              minWidth: 100,
+            }}
+
+          >
+            Buscar
+          </Button>
+        </Stack>
+      </Paper>
+    </Box>
   )
 }
