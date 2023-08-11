@@ -22,10 +22,12 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           # Build your Docker image (modify this as needed)
-          docker build -t my-image:$IMAGE_TAG .
-
+          docker build -t ecr.milleros.com.ar/TrackMiles/client:$IMAGE_TAG ./client
+          docker build -t ecr.milleros.com.ar/TrackMiles/server:$IMAGE_TAG ./server
+                          # my-image                          #
           # Load the image into the cluster
-          kind load docker-image my-image:$IMAGE_TAG --name my-cluster
+          kind load docker-image ecr.milleros.com.ar/TrackMiles/client:$IMAGE_TAG --name my-cluster
+          kind load docker-image ecr.milleros.com.ar/TrackMiles/server:$IMAGE_TAG --name my-cluster
 
           # Apply your Kubernetes manifests (modify this as needed)
           kubectl apply -f path/to/your/kubernetes/manifests
