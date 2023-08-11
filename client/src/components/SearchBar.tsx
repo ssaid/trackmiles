@@ -72,13 +72,8 @@ export const SearchBar = () => {
 
   return (
 
-    <div 
-      className="flex flex-col lg:w-[90%] w-[95%] md:flex-row justify-center items-center gap-3 bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-300 p-8 rounded border-2 border-zinc-200 dark:border-zinc-700"
-    >
-      {
-        /*
-         
-        <Autocomplete
+    <Stack>
+              <Autocomplete
           disablePortal
           isOptionEqualToValue={(option, value) => option === value}
           options={origins!}
@@ -103,27 +98,8 @@ export const SearchBar = () => {
       className="bg-neutral-100"
       renderInput={(params) => <TextField {...params} label="Destino" />}
       />
-         */
-      }
 
-      <div className="md:max-w-[325px] w-full">
-        <Select 
-          onChange={handleOriginChange}
-          options={origins}
-          placeholder='Origen'
-        />
-      </div>
 
-      <PiAirplaneInFlightFill className="w-7 h-7 flex-shrink-0"/>
-
-      <div className="md:max-w-[325px] w-full">
-        <Select 
-          disabled={!origin}
-          onChange={setDestination}
-          options={getDestinations(origin)}
-          placeholder='Destino'
-        />
-      </div>
 
       <button
         disabled={!origin || !destination}
@@ -132,6 +108,6 @@ export const SearchBar = () => {
       >
         Buscar
       </button>
-    </div>
+    </Stack>
   )
 }
