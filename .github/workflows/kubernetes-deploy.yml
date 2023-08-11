@@ -8,16 +8,15 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
       - name: Set up Kubernetes
-        uses: azure/setup-kubernetes@v1
+        uses: azure/k8s-set-context@v3
         with:
+          method: kubeconfig
           kubeconfig: ${{ secrets.KUBE_CONFIG_DATA }}  # Add your Kubernetes configuration as a secret
-
+          # context: <context name> # current-context from kubeconfig is used as default
       - name: Build and Deploy
         env:
           IMAGE_TAG: ${{ github.sha }}
