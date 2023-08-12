@@ -60,7 +60,7 @@ spec:
               number: 80
 ---
 apiVersion: cert-manager.io/v1
-kind: Issuer
+kind: ClusterIssuer
 metadata:
   name: letsencrypt-staging
   namespace: milleros-test
@@ -80,7 +80,7 @@ spec:
             ingressClassName: nginx
 ---
 apiVersion: cert-manager.io/v1
-kind: Issuer
+kind: ClusterIssuer
 metadata:
   name: letsencrypt-prod
   namespace: milleros-test
