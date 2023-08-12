@@ -42,4 +42,4 @@ jobs:
         with:
           context: ./client
           push: true
-          tags: ecr.milleros.com.ar/milleros/client:$IMAGE_TAG
+          tags: ecr.milleros.com.ar:32000/milleros/client:latest
