@@ -10,28 +10,36 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Set up Kubernetes
-        uses: azure/k8s-set-context@v3
-        with:
-          method: kubeconfig
-          kubeconfig: ${{ secrets.KUBE_CONFIG_DATA }}  # Add your Kubernetes configuration as a secret
-          # context: <context name> # current-context from kubeconfig is used as default
-      - name: Build and Deploy
+        uses: actions/checkout@v3
+      # - name: Set up Kubernetes
+      #   uses: azure/k8s-set-context@v3
+      #   with:
+      #     method: kubeconfig
+      #     kubeconfig: ${{ secrets.KUBE_CONFIG_DATA }}  # Add your Kubernetes configuration as a secret
+      #     # context: <context name> # current-context from kubeconfig is used as default
+      # - name: Build and Deploy
+      #   env:
+      #     IMAGE_TAG: ${{ github.sha }}
+      #   run: |
+      #     # Build your Docker image (modify this as needed)
+      #     docker build -t ecr.milleros.com.ar/milleros/client:$IMAGE_TAG ./client
+      #     docker build -t ecr.milleros.com.ar/milleros/server:$IMAGE_TAG ./server
+      #                     # my-image                          #
+      #     # Load the image into the cluster
+      #     # kind load docker-image ecr.milleros.com.ar/milleros/client:$IMAGE_TAG --name microk8s
+      #     # kind load docker-image ecr.milleros.com.ar/milleros/server:$IMAGE_TAG --name microk8s
+      #     docker login -u admin -p admin ecr.milleros.com.ar:32000
+      #     docker push ecr.milleros.com.ar/milleros/client:$IMAGE_TAG
+      #     docker push ecr.milleros.com.ar/milleros/server:$IMAGE_TAG
+      #
+      #     # Apply your Kubernetes manifests (modify this as needed)
+      #     sed "s/COMMIT_SHA/${IMAGE_TAG}/g" kubernetes.yaml.tpl > kubernetes.yaml
+      #     kubectl apply -f kubernetes.yaml
+      - name: Build and push to local registry
         env:
           IMAGE_TAG: ${{ github.sha }}
-        run: |
-          # Build your Docker image (modify this as needed)
-          docker build -t ecr.milleros.com.ar/milleros/client:$IMAGE_TAG ./client
-          docker build -t ecr.milleros.com.ar/milleros/server:$IMAGE_TAG ./server
-                          # my-image                          #
-          # Load the image into the cluster
-          # kind load docker-image ecr.milleros.com.ar/milleros/client:$IMAGE_TAG --name microk8s
-          # kind load docker-image ecr.milleros.com.ar/milleros/server:$IMAGE_TAG --name microk8s
-          docker login -u admin -p admin ecr.milleros.com.ar:32000
-          docker push ecr.milleros.com.ar/milleros/client:$IMAGE_TAG
-          docker push ecr.milleros.com.ar/milleros/server:$IMAGE_TAG
-
-          # Apply your Kubernetes manifests (modify this as needed)
-          sed "s/COMMIT_SHA/${IMAGE_TAG}/g" kubernetes.yaml.tpl > kubernetes.yaml
-          kubectl apply -f kubernetes.yaml
+        uses: docker/build-push-action@v4
+        with:
+          context: ./client
+          push: true
+          tags: ecr.milleros.com.ar:32000/milleros/client:$IMAGE_TAG
