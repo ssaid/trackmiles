@@ -16,7 +16,7 @@ spec:
         app: milleros-client
     spec:
       containers:
-      - image: gcr.io/milleros/client:COMMIT_SHA
+      - image: ecr.milleros.com.ar/milleros/client:COMMIT_SHA
         name: client
         ports:
         - containerPort: 80 
@@ -142,7 +142,7 @@ spec:
         app: milleros-celery-workers
     spec:
       containers:
-      - image: gcr.io/milleros/server:COMMIT_SHA
+      - image: ecr.milleros.com.ar/milleros/server:COMMIT_SHA
         name: celery
         envFrom:
         - configMapRef:
@@ -173,7 +173,7 @@ spec:
         app: milleros-server
     spec:
       initContainers:
-      - image: gcr.io/milleros/server:COMMIT_SHA
+      - image: ecr.milleros.com.ar/milleros/server:COMMIT_SHA
         name: init
         command: ["python3", "manage.py", "migrate"]
         envFrom:
@@ -186,7 +186,7 @@ spec:
                 name: database-postgresql
                 key: postgres-password
       containers:
-      - image: gcr.io/milleros/server:COMMIT_SHA
+      - image: ecr.milleros.com.ar/milleros/server:COMMIT_SHA
         name: server
         envFrom:
         - configMapRef:
@@ -198,7 +198,7 @@ spec:
                 name: database-postgresql
                 key: postgres-password
         command: ["gunicorn", "server.wsgi:application", "--bind", "0.0.0.0:8000"]
-      - image: gcr.io/milleros/server:COMMIT_SHA
+      - image: ecr.milleros.com.ar/milleros/server:COMMIT_SHA
         name: celery-beats
         envFrom:
         - configMapRef:
@@ -210,7 +210,7 @@ spec:
                 name: database-postgresql
                 key: postgres-password
         command: ["celery", "-A", "server", "beat", "--scheduler", "django_celery_beat.schedulers:DatabaseScheduler"]
-      - image: gcr.io/milleros/server:COMMIT_SHA
+      - image: ecr.milleros.com.ar/milleros/server:COMMIT_SHA
         name: celery-flower
         envFrom:
         - configMapRef:

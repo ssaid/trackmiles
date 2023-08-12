@@ -26,8 +26,9 @@ jobs:
           docker build -t ecr.milleros.com.ar/milleros/server:$IMAGE_TAG ./server
                           # my-image                          #
           # Load the image into the cluster
-          kind load docker-image ecr.milleros.com.ar/milleros/client:$IMAGE_TAG --name my-cluster
-          kind load docker-image ecr.milleros.com.ar/milleros/server:$IMAGE_TAG --name my-cluster
+          kind load docker-image ecr.milleros.com.ar/milleros/client:$IMAGE_TAG --name microk8s-cluster
+          kind load docker-image ecr.milleros.com.ar/milleros/server:$IMAGE_TAG --name microk8s-cluster
 
           # Apply your Kubernetes manifests (modify this as needed)
-          kubectl apply -f path/to/your/kubernetes/manifests
+          sed "s/COMMIT_SHA/${IMAGE_TAG}/g" kubernetes.yaml.tpl > kubernetes.yaml
+          kubectl apply -f kubernetes.yaml
