@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import ReactGA from 'react-ga4';
 import { Outlet } from 'react-router-dom';
 import { Stack } from '@mui/system';
+import { Container } from '@mui/material';
 
 export function App() {
 
@@ -21,7 +22,9 @@ export function App() {
   return (
     <Stack>
       <ToggleButton />
-      <Outlet />
+      <Container maxWidth='xl'>
+        <Outlet />
+      </Container>
     </Stack>
 
   )

@@ -35,9 +35,8 @@ export const AnalyticsView = () => {
 
   return (
     <Stack>
-      <Stack
-        p={2}
-      >
+      <Stack p={2} >
+
         <Typography 
           variant="h3"
           className="italic"
@@ -71,8 +70,7 @@ export const AnalyticsView = () => {
       </Stack>
 
       <Stack
-        p={5}
-        mt={5}
+        my={5}
       >
         <FlightsTable data={data}/>
         <Calendar data={data!}/>

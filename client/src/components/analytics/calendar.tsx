@@ -125,12 +125,12 @@ export const Calendar = ({ data }: CalendarProps) => {
   return (
     <>
       <Typography
-        variant='h5'
+        variant='h6'
         align='center'
         fontWeight='bold'
         mt={2}
       >
-        Mapa anual
+        Mapa anual 🗓️
       </Typography>
       <Stack justifyContent='center'>
         <Stack

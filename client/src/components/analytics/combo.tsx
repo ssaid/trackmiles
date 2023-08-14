@@ -82,26 +82,20 @@ const month = dayjs().month(); const from_date = dayjs().month(month).startOf("m
       x: {
         title: {
           display: true,
-          text: 'Día'
-        },
-        ticks: {
-          font:{
+          text: 'Día',
+          font: {
             size: 14,
-            family: 'Poppins'
           }
-        }
+        },
       },
       y: {
         title: {
           display: true,
-          text: 'Millas'
-        },
-        ticks: {
-          font:{
+          text: 'Millas',
+          font: {
             size: 14,
-            family: 'Poppins'
           }
-        }
+        },
       }
     },
     grid: {
@@ -113,21 +107,22 @@ const month = dayjs().month(); const from_date = dayjs().month(month).startOf("m
   return (
     <>
       <Typography
-        variant='h5'
+        variant='h6'
         align='center'
         fontWeight='bold'
         mt={2}
       >
-        Millas en el mes de { displayMonth }
+        Millas en el mes de { displayMonth } 🔥
       </Typography>
 
       <Stack justifyContent='center'>
         <Stack
           p={2}
           maxWidth='screen'
+          mt={2}
         >
           <div className="p-1 overflow-x-auto h-full max-w-screen">
-              <div className="overflow-x-auto max-h-[450px] min-w-[500px] flex justify-center">
+              <div className="max-h-[450px] min-w-[700px] w-full flex justify-center">
                 <Chart 
                   type='bar' 
                   data={dataSet}  
