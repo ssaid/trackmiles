@@ -3,13 +3,14 @@ import { PiAirplaneInFlightFill } from "react-icons/pi";
 import { 
   Stack,
   Typography,
-  Paper
+  Paper,
 } from '@mui/material'
 
 import { useFlightDetails } from "../hooks/useFlightDetail";
 import { Calendar } from "../components/analytics/calendar";
 import { Spinner } from "../components/spinner";
 import { Combo } from "../components/analytics/combo";
+import { FlightsTable } from "../components/analytics/table";
 
 
 export const AnalyticsView = () => {
@@ -17,6 +18,7 @@ export const AnalyticsView = () => {
   const [searchParams] = useSearchParams();
   const origin = searchParams.get('origin');
   const destination = searchParams.get('destination');
+
 
 
   if (!origin || !destination) {
@@ -68,8 +70,21 @@ export const AnalyticsView = () => {
         </Paper>
       </Stack>
 
-      <Calendar data={data!} />
-      <Combo origin={origin} destination={destination} />
+      <Stack
+        p={5}
+        mt={5}
+      >
+        <FlightsTable data={data}/>
+        <Calendar data={data!}/>
+      </Stack>
+      
+
+
+      {
+        /*
+        <Combo origin={origin} destination={destination} />
+        */
+      }
 
     </Stack>
   )
