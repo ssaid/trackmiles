@@ -4,6 +4,7 @@ import {
   Stack,
   Typography,
   Paper,
+  Container,
 } from '@mui/material'
 
 import { useFlightDetails } from "../hooks/useFlightDetail";
@@ -34,9 +35,8 @@ export const AnalyticsView = () => {
 
 
   return (
-    <Stack>
+    <Container maxWidth="xl">
       <Stack p={2} >
-
         <Typography 
           variant="h3"
           className="italic"
@@ -76,8 +76,8 @@ export const AnalyticsView = () => {
         <Calendar data={data!}/>
         <Combo origin={origin} destination={destination} />
       </Stack>
-      
 
-    </Stack>
+
+    </Container>
   )
 }
