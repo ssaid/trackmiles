@@ -11,12 +11,13 @@ import {
   BarController,
   ChartData,
 } from 'chart.js';
-import { Chart } from 'react-chartjs-2';
+import { Chart, ChartProps } from 'react-chartjs-2';
 
 import dayjs from "dayjs"
 import es from "dayjs/locale/es";
 
 import { useFlightDetails } from "../../hooks/useFlightDetail"
+import { Stack, Typography } from '@mui/material';
 
 
 export const Combo = ({ origin, destination }) => {
@@ -49,52 +50,95 @@ const month = dayjs().month(); const from_date = dayjs().month(month).startOf("m
               .sort((a, b) => a - b),
     datasets: [
       {
-        type: 'line' as const,
-        label: 'Maximo',
-        borderColor: 'rgb(255, 99, 132)',
-        backgroundColor: 'rgb(255, 99, 132)',
-        borderWidth: 2,
-        fill: false,
-        data: data.details.map(d => data.miles_max),
-      },
-      {
-        type: 'line' as const,
-        label: 'Promedio',
-        borderColor: 'rgb(255, 255, 132)',
-        backgroundColor: 'rgb(255, 255, 132)',
-        borderWidth: 2,
-        fill: false,
-        data: data.details.map(d => data.miles_mean),
-      },
-      {
-        type: 'line' as const,
-        label: 'Minimo',
-        borderColor: 'rgb(132, 255, 132)',
-        backgroundColor: 'rgb(132, 255, 132)',
-        borderWidth: 2,
-        fill: false,
-        
-        data: data.details.map(d => data.miles_min),
-      },
-      {
         type: 'bar' as const,
         label: 'Millas',
-        backgroundColor: 'rgb(75, 192, 192)',
+        backgroundColor: '#00b894',
         data: data.details.map(d => d.miles),
-        borderColor: 'white',
+        borderColor: 'gray',
         borderWidth: 2,
       },
     ],
+     
+  };
+
+  const options = {
+    font: {
+      size: 18,
+      family: 'Poppins'
+
+    },
+    plugins: {
+      legend: {
+        display: false 
+      },
+      tooltip: {
+      callbacks: {
+        title: () => '',
+        label: (ctx) => `Millas: ${ctx.parsed.y}`
+      }
+    }
+    },
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Día'
+        },
+        ticks: {
+          font:{
+            size: 14,
+            family: 'Poppins'
+          }
+        }
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Millas'
+        },
+        ticks: {
+          font:{
+            size: 14,
+            family: 'Poppins'
+          }
+        }
+      }
+    },
+    grid: {
+      display: false
+    }
   };
 
   
   return (
-    <section className="flex justify-center flex-col items-center">
-      <h4>Millas en el mes de { displayMonth }</h4>
-      <div className="p-5 overflow-x-auto h-full m-5 sm:w-[1050px] flex justify-center">
-          <Chart type='bar' data={dataSet}  />
-      </div>
-    </section>
+    <>
+      <Typography
+        variant='h5'
+        align='center'
+        fontWeight='bold'
+        mt={2}
+      >
+        Millas en el mes de { displayMonth }
+      </Typography>
+
+      <Stack justifyContent='center'>
+        <Stack
+          p={2}
+          maxWidth='screen'
+        >
+          <div className="p-1 overflow-x-auto h-full max-w-screen">
+              <div className="overflow-x-auto max-h-[450px] min-w-[500px] flex justify-center">
+                <Chart 
+                  type='bar' 
+                  data={dataSet}  
+                  options={options}
+                />
+              </div>
+          </div>
+        </Stack>
+      </Stack>
+    </>
+
   )
 
 }

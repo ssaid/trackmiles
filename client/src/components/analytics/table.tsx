@@ -91,16 +91,16 @@ const headCells: readonly HeadCell[] = [
     label: 'Money',
   },
   {
-    id: 'duration',
-    numeric: true,
-    disablePadding: false,
-    label: 'Duracion',
-  },
-  {
     id: 'stops',
     numeric: true,
     disablePadding: false,
     label: 'Paradas',
+  },
+  {
+    id: 'duration',
+    numeric: true,
+    disablePadding: false,
+    label: 'Duracion',
   },
 ];
 
@@ -248,8 +248,8 @@ export const FlightsTable = ({ data }: FlightsTableProps) => {
                     </TableCell>
                     <TableCell align="right">{row.miles}</TableCell>
                     <TableCell align="right">{row.money}</TableCell>
-                    <TableCell align="right">{`${row.duration} h`}</TableCell>
                     <TableCell align="right">{row.seats}</TableCell>
+                    <TableCell align="right">{`${row.duration} h`}</TableCell>
                   </TableRow>
                 );
               })}

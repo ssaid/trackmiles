@@ -76,15 +76,9 @@ export const AnalyticsView = () => {
       >
         <FlightsTable data={data}/>
         <Calendar data={data!}/>
+        <Combo origin={origin} destination={destination} />
       </Stack>
       
-
-
-      {
-        /*
-        <Combo origin={origin} destination={destination} />
-        */
-      }
 
     </Stack>
   )
