@@ -1,4 +1,4 @@
-import { useMediaQuery } from "@mui/material";
+import { Stack, Typography, useMediaQuery } from "@mui/material";
 import { Chart, ChartWrapperOptions, ReactGoogleChartEvent } from 'react-google-charts';
 import ReactDOMServer from 'react-dom/server';
 
@@ -32,6 +32,7 @@ const Tooltip = ({ detail }: TooltipProps) => (
 
 export const Calendar = ({ data }: CalendarProps) => {
 
+  
   const isMobile = useMediaQuery('(max-width: 640px)')
 
   const chartEvents: ReactGoogleChartEvent[] = [
@@ -87,6 +88,7 @@ export const Calendar = ({ data }: CalendarProps) => {
 
   const options: ChartWrapperOptions['options'] = {
     tooltip: { isHtml: true },
+    height: isMobile ? 225 : 325, 
     colorAxis: {
       colors: ['#00b894', '#e74c3c'],
       // colors: ['#3498db', '#f39c12'],
@@ -121,23 +123,34 @@ export const Calendar = ({ data }: CalendarProps) => {
   }
 
   return (
+    <>
+      <Typography
+        variant='h5'
+        align='center'
+        fontWeight='bold'
+        mt={2}
+      >
+        Mapa anual
+      </Typography>
+      <Stack justifyContent='center'>
+        <Stack
+          p={2}
+          maxWidth='screen'
+        >
+          <div className="p-1 overflow-x-auto h-full max-w-screen">
+            <div className="mx-auto sm:w-[925px] w-[650px]">
+              <Chart
+                chartType="Calendar"
+                width="100%"
+                data={calendarData}
+                options={options}
+                chartEvents={chartEvents}
+              />
 
-      <section className="flex justify-center">
-        <div className="p-5 overflow-x-auto h-full m-5 max-w-screen">
-          <div className="mt-5 mx-auto p-5 sm:w-[925px] w-[650px]">
-            <Chart
-              chartType="Calendar"
-              width="100%"
-              height={ isMobile ? "250px" : "325px" }
-              data={calendarData}
-              options={options}
-              chartEvents={chartEvents}
-            />
-
+            </div>
           </div>
-        </div>
-      </section>
-    
-
+        </Stack>
+      </Stack>
+    </>
   )
 }

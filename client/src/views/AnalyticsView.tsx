@@ -1,10 +1,16 @@
 import { Link, Navigate, useParams, useSearchParams } from "react-router-dom";
 import { PiAirplaneInFlightFill } from "react-icons/pi";
+import { 
+  Stack,
+  Typography,
+  Paper,
+} from '@mui/material'
 
 import { useFlightDetails } from "../hooks/useFlightDetail";
 import { Calendar } from "../components/analytics/calendar";
 import { Spinner } from "../components/spinner";
 import { Combo } from "../components/analytics/combo";
+import { FlightsTable } from "../components/analytics/table";
 
 
 export const AnalyticsView = () => {
@@ -12,6 +18,7 @@ export const AnalyticsView = () => {
   const [searchParams] = useSearchParams();
   const origin = searchParams.get('origin');
   const destination = searchParams.get('destination');
+
 
 
   if (!origin || !destination) {
@@ -27,33 +34,58 @@ export const AnalyticsView = () => {
 
 
   return (
-    <main className='mx-auto dark:text-neutral-100 py-5 flex justify-center flex-col'>
-        <div className="bg-neutral-100 dark:bg-neutral-800 flex flex-col p-5 justify-center dark:text-neutral-300 text-neutral-800">
-        <h1 className="md:text-5xl text-4xl font-bold italic">
+    <Stack>
+      <Stack
+        p={2}
+      >
+        <Typography 
+          variant="h3"
+          className="italic"
+        >
           <Link to='/'>
             Milleros
           </Link>
-        </h1>
-        </div>
-      <section>
-        <div className="flex gap-4 sm:gap-5 justify-center p-5 items-center sm:flex-row flex-col">
-          <p 
-            className='text-lg font-semibold dark:bg-orange-500 bg-zinc-600 p-3 px-5 rounded-md text-neutral-100'
-          >
-            {data.origin}
-          </p>
-          <PiAirplaneInFlightFill className="w-7 h-7"/>
-          <p 
-            className='text-lg font-semibold dark:bg-orange-500 bg-zinc-600 p-3 px-5 rounded-md text-neutral-100'
-          >
-            {data.dest}
-          </p>
-        </div>
-      </section>
+        </Typography>
+      </Stack>
+      <Stack 
+        direction="row"
+        gap={2}
+        alignItems="center"
+        justifyContent="center"
+      >
+        <Paper 
+          sx={{
+            p: 2,
+          }}
+        >
+          {data.origin}
+        </Paper>
+        <PiAirplaneInFlightFill className="w-7 h-7"/>
+        <Paper 
+          sx={{
+            p: 2,
+          }}
+        >
+          {data.dest}
+        </Paper>
+      </Stack>
 
-      <Calendar data={data!} />
-      <Combo origin={origin} destination={destination} />
+      <Stack
+        p={5}
+        mt={5}
+      >
+        <FlightsTable data={data}/>
+        <Calendar data={data!}/>
+      </Stack>
+      
 
-    </main>
+
+      {
+        /*
+        <Combo origin={origin} destination={destination} />
+        */
+      }
+
+    </Stack>
   )
 }
