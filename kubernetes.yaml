@@ -36,7 +36,6 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: milleros-test
-  namespace: milleros-test
   annotations: 
     cert-manager.io/cluster-issuer: "letsencrypt"
 spec:
@@ -61,7 +60,6 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: milleros-vars
-  namespace: milleros-test
 data:
   DJANGO_CONFIGURATION: Dev
   SQL_ENGINE: django.db.backends.postgresql
@@ -88,7 +86,6 @@ metadata:
   name: milleros-celery-workers
   labels:
     app: milleros-celery-workers
-  namespace: milleros-test
 spec:
   replicas: 1
   selector:
@@ -119,7 +116,6 @@ metadata:
   labels:
     app: milleros-server
   name: milleros-server
-  namespace: milleros-test
 spec:
   replicas: 1
   selector:
@@ -185,7 +181,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: milleros-server
-  namespace: milleros-test
 spec:
   ports:
   - port: 80
@@ -198,7 +193,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: milleros-server-flower
-  namespace: milleros-test
 spec:
   ports:
   - port: 5555
@@ -211,7 +205,6 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: milleros-backend
-  namespace: milleros-test
   annotations: 
     cert-manager.io/cluster-issuer: "letsencrypt"
 spec:
@@ -236,7 +229,6 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: milleros-backend-flower
-  namespace: milleros-test
   annotations: 
     cert-manager.io/cluster-issuer: "letsencrypt"
     nginx.ingress.kubernetes.io/rewrite-target: "/"
@@ -264,7 +256,6 @@ metadata:
   labels:
     app: redis
   name: redis
-  namespace: milleros-test
 spec:
   replicas: 1
   selector:
@@ -285,7 +276,6 @@ metadata:
   labels:
     app: redis
   name: redis
-  namespace: milleros-test
 spec:
   ports:
   - port: 6379
