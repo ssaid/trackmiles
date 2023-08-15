@@ -106,7 +106,7 @@ spec:
           - name: SQL_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: database-postgresql
+                name: postgresql
                 key: postgres-password
         command: ["celery", "-A", "server", "worker", "-l", "INFO", "-E"]
 ---
@@ -137,7 +137,7 @@ spec:
           - name: SQL_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: database-postgresql
+                name: postgresql
                 key: postgres-password
       containers:
       - image: ghcr.io/ssaid/trackmiles/server:latest
@@ -149,7 +149,7 @@ spec:
           - name: SQL_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: database-postgresql
+                name: postgresql
                 key: postgres-password
         command: ["gunicorn", "server.wsgi:application", "--bind", "0.0.0.0:8000"]
       - image: ghcr.io/ssaid/trackmiles/server:latest
@@ -161,7 +161,7 @@ spec:
           - name: SQL_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: database-postgresql
+                name: postgresql
                 key: postgres-password
         command: ["celery", "-A", "server", "beat", "--scheduler", "django_celery_beat.schedulers:DatabaseScheduler"]
       - image: ghcr.io/ssaid/trackmiles/server:latest
@@ -173,7 +173,7 @@ spec:
           - name: SQL_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: database-postgresql
+                name: postgresql
                 key: postgres-password
         command: ["celery", "-A", "server", "flower", "--address=0.0.0.0", "--port=5555"]
 ---
