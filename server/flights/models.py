@@ -42,7 +42,7 @@ class AirLine(models.Model):
     code = models.SlugField(max_length=10, unique=True)
 
     def __str__(self):
-        return f'[{self.code}] {self.name}'
+        return self.name
 
 
 class Region(models.Model):

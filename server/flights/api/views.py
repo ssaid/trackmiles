@@ -1,8 +1,10 @@
-from django.db.models import Prefetch, Avg
+from django.db.models import Prefetch 
 from rest_framework.views import APIView, Response
-from rest_framework import permissions, generics, pagination, status, filters, viewsets
+from rest_framework import permissions, generics, pagination, status, filters 
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -119,7 +121,7 @@ class FlightDetailView(APIView):
             openapi.Parameter('to_date', openapi.IN_QUERY, description='End date', type=openapi.TYPE_STRING),
         ]
     )
-
+    @method_decorator(cache_page(1)) # 6 hours
     def get(self, request):
         """
         Retrieve flight details based on origin, destination, and date range.
@@ -152,9 +154,9 @@ class FlightDetailView(APIView):
         if to_date:
             flights = flights.filter(flight_date__lte=to_date)
 
-        pf_history = Prefetch('history', queryset=FlightHistory.objects.order_by('-created_at'))
+        pf_history = Prefetch('history', queryset=FlightHistory.objects.prefetch_related('airline').order_by('-created_at'))
 
-        flights = flights.prefetch_related(pf_history).all()
+        flights = flights.prefetch_related(pf_history, 'provider',).all()
 
         import statistics
 
