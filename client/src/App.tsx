@@ -2,6 +2,7 @@ import { ToggleButton } from './components/toggleButton';
 import { useEffect } from 'react';
 import ReactGA from 'react-ga4';
 import { Outlet } from 'react-router-dom';
+import { Stack } from '@mui/system';
 
 export function App() {
 
@@ -18,11 +19,10 @@ export function App() {
 
 
   return (
-
-    <div className="w-auto min-h-screen relative bg-neutral-100 dark:bg-neutral-800 font-poppins">
+    <Stack>
       <ToggleButton />
       <Outlet />
-    </div>
+    </Stack>
 
   )
 }

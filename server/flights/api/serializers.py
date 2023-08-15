@@ -88,10 +88,11 @@ class FlightHistorySerializer(serializers.ModelSerializer):
 
     flight_id = serializers.IntegerField()
     airline_id = serializers.IntegerField()
+    airline = serializers.StringRelatedField()
 
     class Meta:
         model = FlightHistory
-        exclude = ['flight', 'id', 'airline']
+        exclude = ['flight', 'id']
 
 class FlightSerializer(serializers.ModelSerializer):
 

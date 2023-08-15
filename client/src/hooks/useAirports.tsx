@@ -1,4 +1,4 @@
-import { useQuery } from "react-query"
+import { useQuery } from "@tanstack/react-query"
 import { milleros_api } from "../api/milleros_api"
 import { OriginDestinations } from "../interfaces/airports"
 
@@ -17,6 +17,10 @@ export const useAirports = () => {
   const airports = useQuery(
     ['airports'],
     getAirports,
+    {
+      staleTime: 1000 * 60 * 60 * 6, // 6 hours
+      cacheTime: 1000 * 60 * 60 * 6, // 6 hours
+    }
   )
 
 
