@@ -37,8 +37,8 @@ jobs:
         with:
           context: ./client
           push: true
-          # tags: ${{ env.REGISTRY }}/${{ github.repository }}/client:${{ github.sha }}
-          tags: ${{ env.REGISTRY }}/trackmiles/client:${{ github.sha }}
+          tags: ${{ env.REGISTRY }}/${{ github.repository }}/client:${{ github.sha }}
+          # tags: ${{ env.REGISTRY }}/trackmiles/client:${{ github.sha }}
 
       # - name: Set up Kubernetes
       #   uses: azure/k8s-set-context@v3
