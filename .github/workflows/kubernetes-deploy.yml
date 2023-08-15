@@ -37,7 +37,8 @@ jobs:
         with:
           context: ./client
           push: true
-          tags: milleros-client/client:latest
+          tags: ${{ env.REGISTRY }}/${{ github.repository }}/client:${{ github.sha }}
+
       # - name: Set up Kubernetes
       #   uses: azure/k8s-set-context@v3
       #   with:
