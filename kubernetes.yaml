@@ -35,7 +35,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: milleros-test
+  name: milleros-test-ingress
   annotations: 
     cert-manager.io/cluster-issuer: "letsencrypt"
 spec:
