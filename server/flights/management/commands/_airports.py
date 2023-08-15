@@ -33,7 +33,7 @@ def populate_airports():
 
             airport = Airport(
                     name=row['name'], code=row['code'] if row['code'] != r'\N' else None,
-                    city=row['city'], country=country, region=region, display_name=row['display_name'],
+                    city=row['city'], country=country, display_name=row['display_name'],
                     display_name_long=row['display_name_long']
                 )
 
