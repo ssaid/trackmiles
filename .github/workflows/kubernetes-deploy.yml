@@ -7,7 +7,6 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  # IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   build-and-push-images:
@@ -33,14 +32,18 @@ jobs:
           context: ./client
           file: ./client/DockerfileProd
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.repository }}/client:${{ github.sha }} , ${{ env.REGISTRY }}/${{ github.repository }}/client:latest
+          tags: |
+            ${{ env.REGISTRY }}/${{ github.repository }}/client:${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ github.repository }}/client:latest
       -
         name: Build and push
         uses: docker/build-push-action@v4
         with:
           context: ./server
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.repository }}/server:${{ github.sha }} , ${{ env.REGISTRY }}/${{ github.repository }}/server:latest
+          tags: | 
+            ${{ env.REGISTRY }}/${{ github.repository }}/server:${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ github.repository }}/server:latest
 
       # - name: Set up Kubernetes
       #   uses: azure/k8s-set-context@v3
