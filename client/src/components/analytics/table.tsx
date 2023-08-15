@@ -79,6 +79,12 @@ const headCells: readonly HeadCell[] = [
     label: 'Fecha de vuelo',
   },
   {
+    id: 'airline',
+    numeric: false,
+    disablePadding: false,
+    label: 'Aerolinea',
+  },
+  {
     id: 'miles',
     numeric: true,
     disablePadding: false,
@@ -246,6 +252,7 @@ export const FlightsTable = ({ data }: FlightsTableProps) => {
                     >
                       {row.flight_date}
                     </TableCell>
+                    <TableCell align="left">{row.airline}</TableCell>
                     <TableCell align="right">{row.miles}</TableCell>
                     <TableCell align="right">{row.money}</TableCell>
                     <TableCell align="right">{row.seats}</TableCell>

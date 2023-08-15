@@ -2,9 +2,11 @@ import { Link, Navigate, useParams, useSearchParams } from "react-router-dom";
 import { PiAirplaneInFlightFill } from "react-icons/pi";
 import { 
   Stack,
+  Link as MLink,
   Typography,
   Paper,
   Container,
+  Alert,
 } from '@mui/material'
 
 import { useFlightDetails } from "../hooks/useFlightDetail";
@@ -20,16 +22,32 @@ export const AnalyticsView = () => {
   const origin = searchParams.get('origin');
   const destination = searchParams.get('destination');
 
-
-
   if (!origin || !destination) {
     return <Navigate to="/" />
   }
 
   const { data, isLoading, isError } = useFlightDetails({origin, destination})
 
+  if (isError) return (
+    <Stack
+      justifyContent="center"
+      alignItems="center"
+      height="100vh"
+    >
+      <Alert severity="error">
+        Error al cargar los datos. 
+        <MLink 
+          sx={{ ml: 1 }}
+          href='/' 
+          underline='always'
+          color='inherit'
+        >
+          Volver al inicio
+        </MLink>
+      </Alert>
+    </Stack>
 
-  if (isError) return <div>Error...</div>
+  )
 
   if (isLoading || !data) return <Spinner />
 

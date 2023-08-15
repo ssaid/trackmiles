@@ -18,7 +18,8 @@ export const useAirports = () => {
     ['airports'],
     getAirports,
     {
-      staleTime: 1000 * 60 * 60,
+      staleTime: 1000 * 60 * 60 * 6, // 6 hours
+      cacheTime: 1000 * 60 * 60 * 6, // 6 hours
     }
   )
 
