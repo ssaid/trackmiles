@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -8,17 +7,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import TableSortLabel from '@mui/material/TableSortLabel';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
+import TableSortLabel from '@mui/material/TableSortLabel'; import Toolbar from '@mui/material/Toolbar';
 import Paper from '@mui/material/Paper';
-import Checkbox from '@mui/material/Checkbox';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
-import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import { Flight, Detail } from '../../interfaces';
 
@@ -28,7 +18,7 @@ const descendingComparator = <T,>(a: T, b: T, orderBy: keyof T): number => {
     //@ts-ignore
     return new Date(b[orderBy]) - new Date(a[orderBy])
   }
-  
+
   if (b[orderBy] < a[orderBy]) {
     return -1;
   }
@@ -164,7 +154,7 @@ type FlightsTableProps ={
 
 export const FlightsTable = ({ data }: FlightsTableProps) => {
   const [order, setOrder] = React.useState<Order>('asc');
-  const [orderBy, setOrderBy] = React.useState<keyof Detail>('flight_date');
+  const [orderBy, setOrderBy] = React.useState<keyof Detail>('miles');
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
@@ -255,7 +245,7 @@ export const FlightsTable = ({ data }: FlightsTableProps) => {
                     <TableCell align="left">{row.airline}</TableCell>
                     <TableCell align="right">{row.miles}</TableCell>
                     <TableCell align="right">{row.money}</TableCell>
-                    <TableCell align="right">{row.seats}</TableCell>
+                    <TableCell align="right">{row.stops}</TableCell>
                     <TableCell align="right">{`${row.duration} h`}</TableCell>
                   </TableRow>
                 );
