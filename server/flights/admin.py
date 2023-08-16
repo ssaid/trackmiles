@@ -5,6 +5,7 @@ from .models import User, Preference, Region, WaitingList, Provider, Flight, Fli
 admin.site.register(User, UserAdmin)
 admin.site.register(WaitingList)
 
+
 class ProviderAdmin(admin.ModelAdmin):
     fields = ['name']
 
