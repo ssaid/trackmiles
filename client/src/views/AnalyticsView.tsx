@@ -56,7 +56,7 @@ export const AnalyticsView = () => {
     <Container maxWidth="xl">
       <Stack p={2} >
         <Typography 
-          variant="h3"
+          variant="h2"
           className="italic"
         >
           <Link to='/'>
