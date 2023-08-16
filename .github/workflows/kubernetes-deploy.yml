@@ -11,6 +11,7 @@ env:
 jobs:
   build-and-push-images:
     runs-on: ubuntu-latest
+    environment: development
     permissions:
       contents: read
       packages: write
@@ -30,6 +31,8 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: ./client
+          build-args: |
+            "VITE_MILLEROS_BASE_URL=${{ secrets.VITE_MILLEROS_BASE_URL }}"
           file: ./client/DockerfileProd
           push: true
           tags: |

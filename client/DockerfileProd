@@ -3,6 +3,8 @@ WORKDIR /app
 COPY package*.json ./
 RUN yarn install
 COPY ./ .
+ARG VITE_MILLEROS_BASE_URL
+ENV VITE_MILLEROS_BASE_URL ${VITE_MILLEROS_BASE_URL}
 RUN yarn build
 
 FROM nginx as production-stage
