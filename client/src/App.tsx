@@ -1,9 +1,10 @@
+import { ToggleButton } from './components/toggleButton';
 import { useEffect } from 'react';
 import ReactGA from 'react-ga4';
-import bgImage from './assets/bg.jpg'
-import { Countdown } from './components/countdown/Countdown'
+import { Outlet } from 'react-router-dom';
+import { Stack } from '@mui/system';
 
-function App() {
+export function App() {
 
 
   useEffect(() => {
@@ -18,23 +19,11 @@ function App() {
 
 
   return (
-
-    <div className="w-auto h-screen relative font-poppins">
-      <div>
-        <img 
-          src={bgImage} 
-          alt="background" 
-          className="absolute object-cover w-full h-full -z-10"
-        />
-      </div>
-      <section className="bg-black bg-opacity-60 text-white-400 body-font text-white">
-        <div className="container flex flex-col items-center justify-center h-screen px-5 py-24 mx-auto">
-          <Countdown />
-        </div>
-      </section>
-    </div>
+    <Stack>
+      <ToggleButton />
+      <Outlet />
+    </Stack>
 
   )
 }
 
-export default App

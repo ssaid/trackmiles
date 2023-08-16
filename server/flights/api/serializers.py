@@ -1,8 +1,9 @@
+from requests.sessions import InvalidSchema
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
-from flights.models import Airport, Country, Preference, Region, WaitingList
+from flights.models import Airport, Country, Flight, FlightHistory, Preference, Region, WaitingList
 
 User = get_user_model()
 
@@ -82,3 +83,31 @@ class WaitingListSerializer(serializers.ModelSerializer):
     class Meta:
         model = WaitingList
         fields = '__all__'
+
+class FlightHistorySerializer(serializers.ModelSerializer):
+
+    flight_id = serializers.IntegerField()
+    airline_id = serializers.IntegerField()
+    airline = serializers.StringRelatedField()
+
+    class Meta:
+        model = FlightHistory
+        exclude = ['flight', 'id']
+
+class FlightSerializer(serializers.ModelSerializer):
+
+    detail = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Flight
+        exclude = ['created_at', 'updated_at', 'id', 'origin', 'destination']
+
+    def get_detail(self, instance: Flight):
+        flight_history = instance.history.last()
+        if flight_history:
+            serializer = FlightHistorySerializer(flight_history)
+            return serializer.data
+        return None
+
+
+

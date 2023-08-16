@@ -1,0 +1,161 @@
+API Signature
+-> {'ORIGIN','DESTINATION','DATE','PROVIDER'}
+<- {
+  'total_miles': cantidad de millas total (incluye impuestos), [FLOAT]
+  'total_amount': cantidad de ARS total, [FLOAT]
+  'departure_date': fecha de salida, [STR]
+  'airline_code': codigo de aerolinea, [STR]
+  'airline_name': nombre de aerolinea, [STR]
+  'seats': asientos disponibles, [INT]
+  'stops': cantidad de escalas, [INT]
+  'baggage': si incluye equipaje, [BOOL]
+  'provider': ['SMILES', 'SMILES_CLUB']
+  'buy_url': url lista para la compra
+  }
+Inicialmente consultará los fares de SMILES_CLUB haciendo 2 Requests por fecha.
+Preparar endpoint que reciba los datos (/api/ingest)
+
+
+Modelo FlightCostSmiles
+---
+1. Agregar base_amount_miles y base_amount_money
+2. Agregar tax_amount_miles y tax_amount_money
+3. Agregar total_amount_miles, total_amount_money
+4. Agregar fare_type (SMILES, CLUB_SMILES, ) -> provider
+5. Agregar seats
+6. Agregar stops
+7. Agregar cabin_type: selection ['ECONOMIC', 'PREMIUM']
+8. Agregar baggage: bool
+
+
+Api search
+---
+Dado un vuelo con su header y sus tarifas, veremos de donde sacar la info:
+1. base_amount_miles: flightList[*].fareList[?type='SMILES'].miles 
+    ^ Es el precio en millas del costo base de un vuelo (sin impuestos)
+2. base_amount_money: flightList[*].airlineFlightMoney
+    ^ Es el precio en ARS del costo base de un vuelo si entramos por la pagina de la aerolinea (sin impuestos)
+3. tax_amount_miles: TODO
+    ^ Importe en millas del costo de los impuestos de un vuelo
+4. tax_amount_money:
+    4.1 Si flightList[*].isAirlineTaxWithFlight es true -> flightList[*].fareList[?type='SMILES'].airlineTax - flightList[*].airlineTax
+    4.2 Si 4.1 es false -> flightList[*].fareList[?type='SMILES'].airlineTax
+
+
+Para sacar los impuestos hay que hacer otra llamada a la API, a otro endpoint:
+> https://api-airlines-boarding-tax-prd.smiles.com.br/v1/airlines/flight/boardingtax?adults=1&children=0&infants=0&fareuid=j91owtds9l&uid=fxsylqwr6g3&type=SEGMENT_1&highlightText=SMILES
+ ^ fareuid -> uid_del_vuelo
+ ^ uid -> uid de la respuesta para el dia
+    "totalBoardingTax": {
+      "miles": 138460,
+      "money": 146509.8,
+      "airlineTax": 0,
+      "airlineTaxMiles": 0,
+      "boardingTaxMiles": 138460,
+      "boardingTaxMoney": 146509.8
+    },
+
+
+{
+  "requestedFlightSegmentList": [
+    {
+      "type": "SEGMENT_1",
+      "flightList": [
+        {
+          "uid": "scuuyp54rg",
+          "stops": 1,
+          "cabin": "ECONOMIC",
+          "availableSeats": 9,
+          "mostWanted": false,
+          "promotional": false,
+          "airlineTax": 4761,
+          "airlineTaxMiles": 15235.2,
+          "airlineFlightMoney": 103420,
+          "airlineFlightMiles": 179950.8,
+          "isAirlineTaxWithFlight": true,
+          "departure": { "date": "2023-09-07T05:00:00", "airport": { "code": "EZE", "name": "Ministro Pistarini Ezeiza", "city": "Buenos Aires", "country": "Argentina" } },
+          "arrival": { "date": "2023-09-07T14:31:00", "airport": { "code": "MEX", "name": "Benito Juárez", "city": "Ciudad de México", "country": "México" } },
+          "airline": { "code": "CM", "name": "COPA" },
+          "baggage": { "free": "false", "quantity": 0, "code": "" },
+          "duration": { "hours": 12, "minutes": 31 },
+          "timeStop": { "hours": 0, "minutes": 56 },
+          "hourMainStop": "10:34-11:30",
+          "airportMainStop": { "code": "PTY", "name": "Panama City Tocumen", "city": "Panamá", "country": "Panamá" },
+          "legList": [ INFO_ABOUT_CONNECTIONS ],
+          "fareList": [
+            {
+              "uid": "no6xphgnx8",
+              "congener": {
+                "fareReference": "LAA2LZ2S",
+                "fareInfo": "RP",
+                "negotiatedFareCode": null
+              },
+              "type": "SMILES",
+              "money": 0,
+              "miles": 196000,
+              "baseMiles": 196000,
+              "airlineFareAmount": 108181,
+              "airlineFare": 0,
+              "airlineTax": 151270.80000000002,
+              "legListCost": "",
+              "legListCurrency": "ARS",
+              "marginRecalc": null,
+              "recalculate": false
+            },
+            {
+              "uid": "otgwgrp5om",
+              "congener": {
+                "fareReference": "LAA2LZ2S",
+                "fareInfo": "RP",
+                "negotiatedFareCode": null
+              },
+              "type": "SMILES_CLUB",
+              "baseMiles": 196000,
+              "money": 0,
+              "miles": 184300,
+              "airlineFareAmount": 108181,
+              "airlineFare": 0,
+              "airlineTax": 151270.80000000002,
+              "legListCost": "",
+              "legListCurrency": "ARS",
+              "marginRecalc": null,
+              "recalculate": false
+            },
+            {
+              "uid": "mffvtd7ni2",
+              "congener": {
+                "fareReference": "LAA2LZ2S",
+                "fareInfo": "RP",
+                "negotiatedFareCode": null
+              },
+              "baseMiles": 196000,
+              "money": 124600,
+              "miles": 39500,
+              "airlineFareAmount": 108181,
+              "airlineFare": 0,
+              "airlineTax": 151270.80000000002,
+              "marginRecalc": null,
+              "recalculate": false,
+              "offer": 1,
+              "fareValue": 0.794572770686461,
+              "type": "SMILES_MONEY"
+            },
+            {
+              "uid": "8lpetwsp2a",
+              "congener": {
+                "fareReference": "LAA2LZ2S",
+                "fareInfo": "RP",
+                "negotiatedFareCode": null
+              },
+              "baseMiles": 196000,
+              "money": 117150,
+              "miles": 36900,
+              "airlineFareAmount": 108181,
+              "airlineFare": 0,
+              "airlineTax": 151270.80000000002,
+              "marginRecalc": null,
+              "recalculate": false,
+              "offer": 1,
+              "fareValue": 0.794572770686461,
+              "type": "SMILES_MONEY_CLUB"
+            },
