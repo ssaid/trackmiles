@@ -5,6 +5,7 @@ RUN yarn install
 COPY ./ .
 ARG VITE_MILLEROS_BASE_URL
 ENV VITE_MILLEROS_BASE_URL ${VITE_MILLEROS_BASE_URL}
+echo ${VITE_MILLEROS_BASE_URL} > variable_vite
 RUN yarn build
 
 FROM nginx as production-stage
