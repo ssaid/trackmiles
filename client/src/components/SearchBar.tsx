@@ -50,21 +50,75 @@ export const SearchBar = () => {
 
   if (isLoading) return (
 
-    <div 
-      className="flex flex-col lg:w-[90%] w-[95%] md:flex-row justify-center align-center gap-3 bg-neutral-100 dark:bg-neutral-800 p-8 rounded border-2 border-zinc-200 dark:border-zinc-700"
+
+    <Box
+      display="flex"
+      justifyContent="center"
+      height='150px'
+      width='100%'
+      position="relative"
     >
-      <Skeleton variant="rounded" animation="wave" >
-        <TextField sx={{ minWidth: 300 }} />
-      </Skeleton>
-      <Skeleton variant="rounded" animation="wave" >
-        <TextField sx={{ minWidth: 300 }} />
-      </Skeleton>
-      <Skeleton variant="rounded" animation="wave" >
-        <button className="rounded p-2 px-4">Buscar</button>
-      </Skeleton>
+      <Box
+        top={-10}
+        position="absolute"
+        height='200px'
+        width='100%'
+        bgcolor='background.paper'
+        sx={{
+          transform: 'skew(0deg, -2deg);',
+        }}
+      ></Box>
+      <Paper
+        sx={{
+          p: 2,
+          position: 'relative',
+          height:'fit-content',
+          top: -40,
+          minWidth: { xs: '90%', lg: 900 },
+        }}
+      >
+        <Stack
+          alignItems='center'
+          gap={2}
+          direction={{ xs: 'column', sm: 'row' }}
+        >
+          <Skeleton 
+            variant="rounded" 
+            animation="wave" 
+            width={'100%'}
+            sx={{
+              width: '100%',
+            }}
+          >
+            <TextField fullWidth />
+          </Skeleton>
+          <Skeleton 
+            variant="rounded" 
+            animation="wave" 
+            width={'100%'}
+          >
+            <TextField fullWidth />
+          </Skeleton>
 
+          <Skeleton 
+            variant="rounded" 
+            animation="wave" 
+            width={'40%'}
+          >
+            <Button
+              sx={{ 
+                height: 55,
+                minWidth: 100,
+              }}
 
-    </div>
+            >
+              Buscar
+            </Button>
+          </Skeleton>
+        </Stack>
+      </Paper>
+    </Box>
+
   )
 
 
