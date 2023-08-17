@@ -13,7 +13,7 @@ export const HomeView = () => {
       position="relative"
     >
       <img 
-        className="object-cover w-screen absolute z-0"
+        className="object-cover w-screen h-full absolute z-0"
         src={bg} 
       />
       <Backdrop open />
