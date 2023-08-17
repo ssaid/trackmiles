@@ -121,7 +121,7 @@ class FlightDetailView(APIView):
             openapi.Parameter('to_date', openapi.IN_QUERY, description='End date', type=openapi.TYPE_STRING),
         ]
     )
-    @method_decorator(cache_page(1)) # 6 hours
+    @method_decorator(cache_page(60 * 60 * 2)) # 6 hours
     def get(self, request):
         """
         Retrieve flight details based on origin, destination, and date range.

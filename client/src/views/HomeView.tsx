@@ -18,7 +18,7 @@ export const HomeView = () => {
         bgcolor='background.paper'
         position="absolute"
         bottom={0}
-        height='200px'
+        height='35%'
         width='100%'
       ></Box>
       <Stack 
