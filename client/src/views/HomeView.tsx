@@ -8,9 +8,12 @@ import bg from '../assets/bg.jpg'
 export const HomeView = () => {
   
   return (
-    <>
+    <Stack
+      height='100vh'
+      position="relative"
+    >
       <img 
-        className="object-cover w-screen absolute z-0 h-full"
+        className="object-cover w-screen absolute z-0"
         src={bg} 
       />
       <Backdrop open />
@@ -38,6 +41,6 @@ export const HomeView = () => {
 
         <SearchBar />
       </Stack>
-    </>
+    </Stack>
   )
 }
