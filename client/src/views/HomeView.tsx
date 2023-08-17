@@ -10,7 +10,7 @@ export const HomeView = () => {
   return (
     <>
       <img 
-        className="h-screen object-cover w-screen absolute z-0"
+        className="object-cover w-screen absolute z-0 h-full"
         src={bg} 
       />
       <Backdrop open />
