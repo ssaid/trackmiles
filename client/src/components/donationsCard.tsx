@@ -1,6 +1,5 @@
 import { 
   Box,
-  Button,
   Card,
   CardActions,
   CardContent,
@@ -11,7 +10,6 @@ import {
 import { useState } from "react";
 
 import CloseIcon from '@mui/icons-material/Close';
-import cafecito from '../assets/cafecito_logo.svg';
 
 
 
@@ -25,7 +23,7 @@ export const DonationsCard = () => {
 
   const handleDonated = () => {
     setDonated(true);
-    window.open('https://www.google.com.ar', '_blank')
+    window.open('https://cafecito.app/milleros', '_blank')
   }
 
 
@@ -33,6 +31,7 @@ export const DonationsCard = () => {
     <Box
       position="sticky"
       bottom={0}
+      zIndex={1000}
     >
       <Box
         position="absolute"
@@ -79,23 +78,11 @@ export const DonationsCard = () => {
                       <Typography fontWeight='bold' textAlign='center'>
                         ¡Ayudanos a seguir creciendo y sé parte del crecimiento de Milleros!
                       </Typography>
-                      <Button 
-                        sx={{
-                          py: 2
-                        }}
-                        variant='contained' 
+                      <img 
+                        style={{ cursor: 'pointer' }}
+                        src='https://cdn.cafecito.app/imgs/buttons/button_1.svg'
                         onClick={handleDonated}
-                      >
-                        <Stack
-                          direction='row'
-                          gap={1}
-                        >
-                          <img src={cafecito}/>
-                          <Typography fontWeight='bold' textAlign='center'>
-                            Invitanos un Cafecito
-                          </Typography>
-                        </Stack>
-                      </Button>
+                      />
                     </>
 
                   ) 
