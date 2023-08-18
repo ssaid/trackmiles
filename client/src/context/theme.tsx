@@ -28,6 +28,9 @@ export const ColorModeProvider: React.FC<React.PropsWithChildren> = ({ children 
       createTheme({
         palette: {
           mode,
+          primary: {
+            main: '#3f51b5' 
+          }
         },
       }),
     [mode],

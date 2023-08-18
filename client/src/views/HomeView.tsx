@@ -24,21 +24,6 @@ export const HomeView = () => {
         height='35%'
         width='100%'
       >
-        <Stack
-          height='100%'
-          justifyContent="end"
-          alignItems="center"
-          padding={10}
-
-        >
-          <Typography 
-            variant="h2"
-            className="italic"
-            color="grey.300"
-          >
-            Milleros
-          </Typography>
-        </Stack>
       </Box>
       <Stack 
         position="absolute"
@@ -52,7 +37,7 @@ export const HomeView = () => {
           className="italic"
           color="grey.300"
         >
-          
+            Milleros
         </Typography>
 
         <SearchBar />

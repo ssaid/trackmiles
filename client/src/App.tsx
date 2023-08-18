@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import ReactGA from 'react-ga4';
 import { Outlet } from 'react-router-dom';
 import { Stack } from '@mui/system';
+import { DonationsCard } from './components/donationsCard';
 
 export function App() {
 
@@ -22,6 +23,7 @@ export function App() {
     <Stack>
       <ToggleButton />
       <Outlet />
+      <DonationsCard />
     </Stack>
 
   )
