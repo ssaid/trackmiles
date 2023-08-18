@@ -92,18 +92,33 @@ class AirportView(generics.ListAPIView):
 
 
 
-class AirportsView(generics.ListAPIView):
+class AirportsView(APIView):
 
-    # permission_classes = [permissions.IsAuthenticated]
+    def get(self, request):
 
-    serializer_class = PreferenceSerializer
-    queryset = Preference.objects.distinct('airport_origin').filter(airport_origin__isnull=False)
+        routes = Preference.get_all_routes()
 
-    # def get_queryset(self):
-    #     return Preference.objects.filter(user=self.request.user)
+        tmp_dict = {}
+        for origin, destination in routes:
+            if origin not in tmp_dict:
+                tmp_dict[origin] = []
 
-    # def perform_create(self, serializer):
-    #     serializer.save(user=self.request.user)
+            if destination not in tmp_dict[origin]:
+                tmp_dict[origin].append(destination)
+
+
+        result = []
+        for origin, destinations in tmp_dict.items():
+            origin = Airport.objects.get(code=origin)
+            destinations = Airport.objects.filter(code__in=destinations)
+
+            result.append({
+                'airport_origin': AirportSerializer(origin).data,
+                'airport_destinations': AirportSerializer(destinations, many=True).data
+            })
+
+
+        return Response(result)
 
 
 class WaitingListView(generics.CreateAPIView):

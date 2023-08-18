@@ -43,29 +43,6 @@ class AirportSerializer(serializers.ModelSerializer):
             model = Airport
             fields = ['display_name', 'code']
 
-class PreferenceSerializer(serializers.ModelSerializer):
-
-    airport_origin = serializers.SerializerMethodField()
-    airport_destinations = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Preference
-        fields = ['airport_origin', 'airport_destinations']
-
-    def get_airport_origin(self, obj):
-        airport_origin = obj.airport_origin
-        if airport_origin:
-            serializer = AirportSerializer(airport_origin)
-            return serializer.data
-        return None
-
-    def get_airport_destinations(self, obj):
-        airport_origin = obj.airport_origin
-        if airport_origin:
-            airports_destinations = Airport.objects.filter(users_destination__airport_origin=airport_origin).distinct()
-            serializer = AirportSerializer(airports_destinations, many=True)
-            return serializer.data
-        return []
 
 class WaitingListSerializer(serializers.ModelSerializer):
 
