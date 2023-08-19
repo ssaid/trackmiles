@@ -84,7 +84,7 @@ const headCells: readonly HeadCell[] = [
     id: 'money',
     numeric: true,
     disablePadding: false,
-    label: 'Money',
+    label: 'Precio',
   },
   {
     id: 'stops',

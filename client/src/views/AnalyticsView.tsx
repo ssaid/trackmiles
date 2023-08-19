@@ -14,6 +14,7 @@ import { Calendar } from "../components/analytics/calendar";
 import { Spinner } from "../components/spinner";
 import { Combo } from "../components/analytics/combo";
 import { FlightsTable } from "../components/analytics/table";
+import { HeatMap } from "../components/analytics/heatmap";
 
 
 export const AnalyticsView = () => {
@@ -75,7 +76,9 @@ export const AnalyticsView = () => {
             p: 2,
           }}
         >
-          {data.origin}
+          <Typography textAlign='center'>
+            {data.origin}
+          </Typography>
         </Paper>
         <PiAirplaneInFlightFill className="w-7 h-7"/>
         <Paper 
@@ -83,7 +86,9 @@ export const AnalyticsView = () => {
             p: 2,
           }}
         >
-          {data.dest}
+          <Typography textAlign='center'>
+            {data.dest}
+          </Typography>
         </Paper>
       </Stack>
 
@@ -91,7 +96,7 @@ export const AnalyticsView = () => {
         my={5}
       >
         <FlightsTable data={data}/>
-        <Calendar data={data!}/>
+        <HeatMap data={data}/>
         <Combo origin={origin} destination={destination} />
       </Stack>
 

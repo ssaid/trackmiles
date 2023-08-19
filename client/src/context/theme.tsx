@@ -7,10 +7,9 @@ export const ColorModeContext = React.createContext({ toggleColorMode: () => {} 
 
 export const ColorModeProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
 
-  const storedTheme = localStorage.getItem('theme');
-
   const [mode, setMode] = React.useState<'light' | 'dark'>(
-    storedTheme === 'light' ? 'light' : 'dark'
+    localStorage.theme === 'dark' || (!('theme' in localStorage) && 
+      window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light'
   );
 
   const colorMode = React.useMemo(
@@ -35,6 +34,19 @@ export const ColorModeProvider: React.FC<React.PropsWithChildren> = ({ children 
       }),
     [mode],
   );
+
+
+  React.useEffect(() => {
+    const root = window.document.documentElement;
+
+    root.classList.remove(mode == 'dark' ? 'light' : 'dark');
+    root.classList.add(mode);
+
+    localStorage.setItem("mode", mode);
+
+  }, [mode]);
+
+
 
   return (
 
