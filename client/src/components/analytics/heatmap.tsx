@@ -2,8 +2,7 @@ import ReactDOMServer from 'react-dom/server';
 import { Stack, Typography, useMediaQuery } from "@mui/material";
 import { ApexOptions } from "apexcharts";
 import Chart from "react-apexcharts";
-import dayjs from "dayjs";
-import es from "dayjs/locale/es";
+import dayjs from "dayjs"; import es from "dayjs/locale/es";
 
 import { Detail, Flight } from "../../interfaces";
 import { memo, useCallback } from "react";
@@ -76,13 +75,13 @@ export const HeatMap = memo(({ data }: HeatMapProps) => {
         colorScale: {
           ranges: [{
             from: -100,
-            to: -25,
+            to: -26,
             name: 'Muy Baratos',
             color: '#00A100'
           },
             {
               from: -25,
-              to: -10,
+              to: -11,
               name: 'Baratos',
               color: '#128FD9'
             },
@@ -93,13 +92,13 @@ export const HeatMap = memo(({ data }: HeatMapProps) => {
               color: '#fff133' //yellow
             },
             {
-              from: 10,
+              from: 11,
               to: 25,
               name: 'Caros',
               color: '#FFB200' //orange
             },
             {
-              from: 25,
+              from: 26,
               to: 100,
               name: 'Muy Caros',
               color: '#FF0000'
