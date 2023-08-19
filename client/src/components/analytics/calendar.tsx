@@ -32,7 +32,6 @@ const Tooltip = ({ detail }: TooltipProps) => (
 
 export const Calendar = ({ data }: CalendarProps) => {
 
-  
   const isMobile = useMediaQuery('(max-width: 640px)')
 
   const chartEvents: ReactGoogleChartEvent[] = [

@@ -10,11 +10,10 @@ import {
 } from '@mui/material'
 
 import { useFlightDetails } from "../hooks/useFlightDetail";
-import { Calendar } from "../components/analytics/calendar";
 import { Spinner } from "../components/spinner";
-import { Combo } from "../components/analytics/combo";
 import { FlightsTable } from "../components/analytics/table";
 import { HeatMap } from "../components/analytics/heatmap";
+import { ColumnBar } from "../components/analytics/column-bar";
 
 
 export const AnalyticsView = () => {
@@ -97,7 +96,7 @@ export const AnalyticsView = () => {
       >
         <FlightsTable data={data}/>
         <HeatMap data={data}/>
-        <Combo origin={origin} destination={destination} />
+        <ColumnBar origin={origin} destination={destination} />
       </Stack>
 
 

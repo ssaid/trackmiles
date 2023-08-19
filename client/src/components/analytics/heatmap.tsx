@@ -90,13 +90,13 @@ export const HeatMap = memo(({ data }: HeatMapProps) => {
               from: -10,
               to: 10,
               name: 'Promedio',
-              color: '#fff133' //yellow
+              color: '#fff133'
             },
             {
               from: 11,
               to: 25,
               name: 'Caros',
-              color: '#FFB200' //orange
+              color: '#FFB200'
             },
             {
               from: 26,
@@ -156,7 +156,7 @@ export const HeatMap = memo(({ data }: HeatMapProps) => {
           p={2}
           maxWidth='screen'
         >
-          <div className="p-1 overflow-x-auto h-full max-w-screen">
+          <div className="p-1 overflow-x-auto h-full max-w-screen overflow-y-clip">
             <div className="mx-auto sm:w-[925px] w-[650px]">
               <Chart
                 height={350}
