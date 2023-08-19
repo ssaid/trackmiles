@@ -94,6 +94,7 @@ class AirportView(generics.ListAPIView):
 
 class AirportsView(APIView):
 
+    @method_decorator(cache_page(60 * 60 * 6)) # 6 hours
     def get(self, request):
 
         routes = Preference.get_all_routes()
@@ -136,7 +137,7 @@ class FlightDetailView(APIView):
             openapi.Parameter('to_date', openapi.IN_QUERY, description='End date', type=openapi.TYPE_STRING),
         ]
     )
-    @method_decorator(cache_page(60 * 60 * 2)) # 6 hours
+    @method_decorator(cache_page(60 * 60 * 6)) # 6 hours
     def get(self, request):
         """
         Retrieve flight details based on origin, destination, and date range.
