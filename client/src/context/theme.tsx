@@ -42,7 +42,7 @@ export const ColorModeProvider: React.FC<React.PropsWithChildren> = ({ children 
     root.classList.remove(mode == 'dark' ? 'light' : 'dark');
     root.classList.add(mode);
 
-    localStorage.setItem("mode", mode);
+    localStorage.setItem("theme", mode);
 
   }, [mode]);
 

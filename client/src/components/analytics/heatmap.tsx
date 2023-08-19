@@ -1,5 +1,5 @@
 import ReactDOMServer from 'react-dom/server';
-import { Stack, Typography, useMediaQuery } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import { ApexOptions } from "apexcharts";
 import Chart from "react-apexcharts";
 import dayjs from "dayjs"; import es from "dayjs/locale/es";
@@ -57,7 +57,7 @@ export const HeatMap = memo(({ data }: HeatMapProps) => {
   const series: ApexOptions["series"] = Object.entries(parseData(data))
     .map( ([name, data]) => ({
       name,
-      data: data.sort( (a, b) => parseInt(a.x) - parseInt(b.x))
+      data: Array.from({length: 31}, (_, i) => data.find( d => d.x === `${ i + 1 }`.padStart(2, '0'))?.y ?? 1000000)
     }))
 
 
@@ -73,12 +73,13 @@ export const HeatMap = memo(({ data }: HeatMapProps) => {
       heatmap: {
         shadeIntensity: 0.5,
         colorScale: {
-          ranges: [{
+          ranges: [
+            {
             from: -100,
             to: -26,
             name: 'Muy Baratos',
             color: '#00A100'
-          },
+            },
             {
               from: -25,
               to: -11,
@@ -102,6 +103,12 @@ export const HeatMap = memo(({ data }: HeatMapProps) => {
               to: 100,
               name: 'Muy Caros',
               color: '#FF0000'
+            },
+            {
+              from: 999999,
+              to: 1000002,
+              color: '#454545' ,
+              name: 'Sin Datos'
             }
           ]
         }
@@ -118,7 +125,6 @@ export const HeatMap = memo(({ data }: HeatMapProps) => {
 
         const [ month, year ] = w.globals.seriesNames[seriesIndex].split(' ')
         const date = `${w.globals.labels[dataPointIndex]} ${month} ${year}`
-        const formatedDate = dayjs(date, 'DD MMMM YYYY', 'es').format('YYYY-MM-DD')
 
         const detail = data.details.find( d => dayjs(d.flight_date).locale(es).format('DD MMMM YYYY') === date )
 
