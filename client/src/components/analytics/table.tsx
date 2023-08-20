@@ -90,7 +90,7 @@ const headCells: readonly HeadCell[] = [
     id: 'stops',
     numeric: true,
     disablePadding: false,
-    label: 'Paradas',
+    label: 'Escalas',
   },
   {
     id: 'duration',
