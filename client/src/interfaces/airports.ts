@@ -5,7 +5,7 @@ export interface OriginDestinations {
 }
 
 export interface Airport {
-  display_name: string
+  display_name_long: string
   code: string
 }
 
