@@ -11,6 +11,8 @@ import TableSortLabel from '@mui/material/TableSortLabel'; import Toolbar from '
 import Paper from '@mui/material/Paper';
 import { visuallyHidden } from '@mui/utils';
 import { Flight, Detail } from '../../interfaces';
+import { Button } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 const descendingComparator = <T,>(a: T, b: T, orderBy: keyof T): number => {
 
@@ -98,7 +100,14 @@ const headCells: readonly HeadCell[] = [
     disablePadding: false,
     label: 'Duracion',
   },
+  {
+    id: 'external_link',
+    numeric: false,
+    disablePadding: false,
+    label: 'Comprar',
+  },
 ];
+
 
 interface EnhancedTableProps {
   numSelected: number;
@@ -123,7 +132,7 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
+            align={headCell.id == 'external_link' ? 'center' : headCell.numeric ? 'right' : 'left'}
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -244,9 +253,17 @@ export const FlightsTable = ({ data }: FlightsTableProps) => {
                     </TableCell>
                     <TableCell align="left">{row.airline}</TableCell>
                     <TableCell align="right">{row.miles}</TableCell>
-                    <TableCell align="right">{row.money}</TableCell>
+                    <TableCell align="right">{row.seats}</TableCell>
                     <TableCell align="right">{row.stops}</TableCell>
                     <TableCell align="right">{`${row.duration} h`}</TableCell>
+                    <TableCell align="center">
+                      <Link 
+                        to={row.external_link as string}
+                        target="_blank"
+                      >
+                        <Button variant='contained'>Ir a Smiles</Button>
+                      </Link>
+                    </TableCell>
                   </TableRow>
                 );
               })}
