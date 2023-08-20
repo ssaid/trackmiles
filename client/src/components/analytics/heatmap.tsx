@@ -24,7 +24,6 @@ const Tooltip = ({ detail }: TooltipProps) => {
     <div className="flex flex-col text-neutral-800 w-40 text-sm p-2">
       { detail.flight_date ? <span className="flex items-center gap-1"><BsCalendarDate /> Fecha: { detail.flight_date }</span> : ''}
       { detail.miles ? <span className="flex items-center gap-1"><ImPriceTags /> Millas: { detail.miles.toLocaleString('es') }</span> : ''}
-      { detail.money ? <span className="flex items-center gap-1"><MdOutlineAttachMoney /> Precio: { detail.money.toLocaleString('es') }</span> : ''}
       { detail.stops ? <span className="flex items-center gap-1"><MdAirlineStops /> Escalas: { detail.stops }</span> : ''}
       { detail.duration ? <span className="flex items-center gap-1"><BsClockHistory /> Duracion: { detail.duration }h</span> : ''}
       { detail.seats ? <span className="flex items-center gap-1"><MdAirlineSeatReclineNormal /> Asientos: { detail.seats }</span> : ''}
