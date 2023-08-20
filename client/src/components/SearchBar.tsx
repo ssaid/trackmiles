@@ -15,13 +15,13 @@ export const SearchBar = () => {
   const [ destination, setDestination ] = useState<string | null>(null)
 
   const origins = useMemo(
-    () => data?.map(({airport_origin}) => airport_origin.display_name)
+    () => data?.map(({airport_origin}) => airport_origin.display_name_long)
   , [data])
 
   const getDestinations = useCallback((origin: string | null) => {
     return data
-      ?.find(ap => ap.airport_origin.display_name === origin)
-      ?.airport_destinations?.map(dest => dest.display_name) ?? []
+      ?.find(ap => ap.airport_origin.display_name_long === origin)
+      ?.airport_destinations?.map(dest => dest.display_name_long) ?? []
 
   }, [data])
 
@@ -34,7 +34,7 @@ export const SearchBar = () => {
 
       const airports = data?.flatMap(x => [x.airport_origin, ...x.airport_destinations])
 
-      return airports!.find(x => x.display_name === airportName)?.code ?? ''
+      return airports!.find(x => x.display_name_long === airportName)?.code ?? ''
   }
 
 
