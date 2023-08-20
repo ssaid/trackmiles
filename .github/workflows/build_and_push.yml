@@ -12,12 +12,13 @@ env:
 jobs:
   build-and-push-images:
     runs-on: ubuntu-latest
-    environment: production
+    environment:
+      name: ${{ github.ref_name }}
     permissions:
       contents: read
       packages: write
     steps:
-      - 
+      -
         name: Checkout code
         uses: actions/checkout@v3
       -
@@ -46,6 +47,6 @@ jobs:
         with:
           context: ./server
           push: true
-          tags: | 
+          tags: |
             ${{ env.REGISTRY }}/${{ github.repository }}/server:${{ github.sha }}
             ${{ env.REGISTRY }}/${{ github.repository }}/server:${{ vars.SUFFIX_IMAGE }}
