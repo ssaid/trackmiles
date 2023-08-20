@@ -1,10 +1,10 @@
-name: Kubernetes Deployment
+name: Build and push images
 
 on:
   push:
     branches:
-      - develop  # Change this to the branch you want to trigger deployments from
-      - main  # Change this to the branch you want to trigger deployments from
+      - develop
+      - main
 
 env:
   REGISTRY: ghcr.io
@@ -12,7 +12,7 @@ env:
 jobs:
   build-and-push-images:
     runs-on: ubuntu-latest
-    environment: development
+    environment: production
     permissions:
       contents: read
       packages: write
@@ -33,13 +33,13 @@ jobs:
         with:
           context: ./client
           build-args: |
-            "VITE_MILLEROS_BASE_URL=${{ vars.VITE_MILLEROS_BASE_URL_PROD }}"
-            "VITE_GOOGLE_ANALYTICS_ID=${{ vars.VITE_GOOGLE_ANALYTICS_ID_PROD }}"
+            "VITE_MILLEROS_BASE_URL=${{ vars.VITE_MILLEROS_BASE_URL }}"
+            "VITE_GOOGLE_ANALYTICS_ID=${{ vars.VITE_GOOGLE_ANALYTICS_ID }}"
           file: ./client/DockerfileProd
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ github.repository }}/client:${{ github.sha }}
-            ${{ env.REGISTRY }}/${{ github.repository }}/client:stable-latest
+            ${{ env.REGISTRY }}/${{ github.repository }}/client:${{ vars.SUFFIX_IMAGE }}
       -
         name: Build and push
         uses: docker/build-push-action@v4
@@ -48,4 +48,4 @@ jobs:
           push: true
           tags: | 
             ${{ env.REGISTRY }}/${{ github.repository }}/server:${{ github.sha }}
-            ${{ env.REGISTRY }}/${{ github.repository }}/server:stable-latest
+            ${{ env.REGISTRY }}/${{ github.repository }}/server:${{ vars.SUFFIX_IMAGE }}
