@@ -1,5 +1,5 @@
 import ReactDOMServer from 'react-dom/server';
-import { Stack, Typography } from "@mui/material";
+import { Stack, Typography, useMediaQuery } from "@mui/material";
 import { ApexOptions } from "apexcharts";
 import Chart from "react-apexcharts";
 import dayjs from "dayjs"; import es from "dayjs/locale/es";
@@ -39,6 +39,8 @@ type HeatMapProps = {
 
 export const HeatMap = memo(({ data }: HeatMapProps) => {
 
+  const isMobile = useMediaQuery('(max-width: 600px)')
+
   const parseData = useCallback( (data: Flight) => {
     const result: { [name: string]: {x: string, y: number}[] }  = {}
     for ( let detail of data.details){
@@ -71,43 +73,43 @@ export const HeatMap = memo(({ data }: HeatMapProps) => {
     },
     plotOptions: {
       heatmap: {
-        shadeIntensity: 0.5,
+        // shadeIntensity: 0.5,
         colorScale: {
           ranges: [
             {
-            from: -100,
+            from: -1000,
             to: -26,
             name: 'Muy Baratos',
-            color: '#00A100'
+            color: '#10b981'
             },
             {
               from: -25,
               to: -11,
               name: 'Baratos',
-              color: '#128FD9'
+              color: '#1d4ed8'
             },
             {
               from: -10,
               to: 10,
               name: 'Promedio',
-              color: '#fff133'
+              color: '#eab308'
             },
             {
               from: 11,
               to: 25,
               name: 'Caros',
-              color: '#FFB200'
+              color: '#f97316'
             },
             {
               from: 26,
-              to: 100,
+              to: 200,
               name: 'Muy Caros',
-              color: '#FF0000'
+              color: '#dc2626'
             },
             {
               from: 999999,
               to: 1000002,
-              color: '#454545' ,
+              color: '#525252' ,
               name: 'Sin Datos'
             }
           ]
@@ -157,9 +159,9 @@ export const HeatMap = memo(({ data }: HeatMapProps) => {
           maxWidth='screen'
         >
           <div className="p-1 overflow-x-auto h-full max-w-screen overflow-y-clip">
-            <div className="mx-auto sm:w-[925px] w-[650px]">
+            <div className="mx-auto sm:w-[925px] w-[625px]">
               <Chart
-                height={350}
+                height={ isMobile ? 250 : 350}
                 options={options}
                 type="heatmap"
                 series={series}
