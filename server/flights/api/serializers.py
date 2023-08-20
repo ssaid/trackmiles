@@ -41,7 +41,7 @@ class AirportSerializer(serializers.ModelSerializer):
     
         class Meta:
             model = Airport
-            fields = ['display_name', 'code']
+            fields = ['display_name_long', 'code']
 
 
 class WaitingListSerializer(serializers.ModelSerializer):

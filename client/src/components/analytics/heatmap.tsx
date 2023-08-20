@@ -5,7 +5,7 @@ import Chart from "react-apexcharts";
 import dayjs from "dayjs"; import es from "dayjs/locale/es";
 
 import { Detail, Flight } from "../../interfaces";
-import { memo, useCallback } from "react";
+import { memo, useCallback, useMemo } from "react";
 
 
 import { MdAirlineSeatReclineNormal, MdAirlineStops, MdOutlineAttachMoney } from "react-icons/md";
@@ -63,6 +63,24 @@ export const HeatMap = memo(({ data }: HeatMapProps) => {
     }))
 
 
+  const maxPorcentual = useMemo(() => Math.max(...data.details.map( d => d.porcentual)),[data])
+  const minPorcentual = useMemo(() => Math.min(...data.details.map( d => d.porcentual)),[data])
+
+  const cheapest = (0 + minPorcentual) / 3
+  const cheap = cheapest * 2
+  const expensive = (0 + maxPorcentual) / 3
+  const mostExpensive = expensive * 2
+
+  /*
+   *
+   * [minPorcentual, cheapest) => Muy Baratos
+   * [cheapest, cheap) => Baratos
+   * [cheap, expensive) => Promedio
+   * [expensive, mostExpensive) => Caros
+   * [mostExpensive, maxPorcentual] => Muy Caros
+   *
+   */
+
 
   const options: ApexOptions = {
     chart: {
@@ -73,36 +91,36 @@ export const HeatMap = memo(({ data }: HeatMapProps) => {
     },
     plotOptions: {
       heatmap: {
-        // shadeIntensity: 0.5,
+        shadeIntensity: 0.5,
         colorScale: {
           ranges: [
             {
-            from: -1000,
-            to: -26,
+            from: minPorcentual,
+            to: cheapest,
             name: 'Muy Baratos',
-            color: '#10b981'
+            color: '#22c55e'
             },
             {
-              from: -25,
-              to: -11,
+              from: cheapest + 0.001,
+              to: cheap,
               name: 'Baratos',
               color: '#1d4ed8'
             },
             {
-              from: -10,
-              to: 10,
+              from: cheap + 0.001,
+              to: expensive,
               name: 'Promedio',
               color: '#eab308'
             },
             {
-              from: 11,
-              to: 25,
+              from: expensive + 0.001,
+              to: mostExpensive,
               name: 'Caros',
               color: '#f97316'
             },
             {
-              from: 26,
-              to: 200,
+              from: mostExpensive + 0.001,
+              to: maxPorcentual,
               name: 'Muy Caros',
               color: '#dc2626'
             },
