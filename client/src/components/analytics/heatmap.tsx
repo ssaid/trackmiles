@@ -66,8 +66,8 @@ export const HeatMap = memo(({ data }: HeatMapProps) => {
   const maxPorcentual = useMemo(() => Math.max(...data.details.map( d => d.porcentual)),[data])
   const minPorcentual = useMemo(() => Math.min(...data.details.map( d => d.porcentual)),[data])
 
-  const cheapest = (0 + minPorcentual) / 3
-  const cheap = cheapest * 2
+  const cheap = (0 + minPorcentual) / 3
+  const cheapest = cheap * 2
   const expensive = (0 + maxPorcentual) / 3
   const mostExpensive = expensive * 2
 
@@ -80,7 +80,6 @@ export const HeatMap = memo(({ data }: HeatMapProps) => {
    * [mostExpensive, maxPorcentual] => Muy Caros
    *
    */
-
 
   const options: ApexOptions = {
     chart: {
