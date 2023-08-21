@@ -27,6 +27,7 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include('flights.api.urls')),
+    path('api/v1/', include('faqs.api.urls')),
     # path('api/v1/auth/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     # path('api/v1/auth/refresh_token/', TokenRefreshView.as_view(), name='token_refresh'),
     re_path(

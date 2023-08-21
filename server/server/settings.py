@@ -39,10 +39,12 @@ class Dev(Configuration):
         'rest_framework_simplejwt',
         'drf_yasg',
         'corsheaders',
-        'flights',
         'celery',
         'django_celery_results',
         'django_celery_beat',
+        'ckeditor',
+        'flights',
+        'faqs',
     ]
 
     MIDDLEWARE = [
