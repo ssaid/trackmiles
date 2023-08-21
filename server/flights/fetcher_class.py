@@ -50,10 +50,10 @@ class FlightFetcherSmiles():
         self.finish()
 
     def _build_buy_url(self):
-        url_tmpl = "https://www.smiles.com.ar/emission?originAirportCode=EZE&destinationAirportCode=MEX&departureDate={depDate}&adults=1&infants=0&children=0&cabinType=all&tripType=2"
+        url_tmpl = "https://www.smiles.com.ar/emission?originAirportCode={origin}&destinationAirportCode={destination}&departureDate={depDate}&adults=1&infants=0&children=0&cabinType=all&tripType=2"
         date_dt = datetime.strptime(self._date, '%Y-%m-%d')
         tmst_ms = int(date_dt.timestamp() * 1000)
-        url = url_tmpl.format(depDate=tmst_ms)
+        url = url_tmpl.format(depDate=tmst_ms, origin=self._origin, destination=self._destination)
         return url
 
     def build_data(self):
