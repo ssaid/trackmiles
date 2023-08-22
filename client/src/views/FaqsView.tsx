@@ -32,7 +32,7 @@ export const FaqsView = () => {
       </Stack>
       <Divider />
 
-      <Container maxWidth='lg' sx={{ minHeight: '100vh', mt: 3 }}>
+      <Container maxWidth='lg' sx={{ minHeight: '100vh', mt: 3, pb: 2 }}>
         {
           faqs.map(faq => (
             <Accordion key={faq.id}>
