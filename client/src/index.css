@@ -37,3 +37,10 @@
   font-family: 'Poppins', sans-serif;
 
 }
+
+.rich-anchor {
+  font-weight: bold;
+  text-decoration: underline;
+  text-decoration-style: dashed;
+
+}
