@@ -17,7 +17,7 @@ export const FaqButton = () => {
       }}
     >
       <Link
-        to='/about'
+        to='/faqs'
       >
         <IconButton 
           sx={{

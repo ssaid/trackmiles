@@ -6,7 +6,7 @@ import { Link } from "react-router-dom"
 
 
 
-export const AboutView = () => {
+export const FaqsView = () => {
 
   const { faqs } = useFaqs()
 
@@ -41,10 +41,10 @@ export const AboutView = () => {
                 aria-controls="panel1a-content"
                 id="panel1a-header"
               >
-                  <div dangerouslySetInnerHTML={{__html: faq.question}}/>
+                <Typography dangerouslySetInnerHTML={{__html: faq.question}} />
               </AccordionSummary>
               <AccordionDetails>
-                  <div dangerouslySetInnerHTML={{__html: faq.answer}}/>
+                <Typography dangerouslySetInnerHTML={{__html: faq.answer}} />
               </AccordionDetails>
             </Accordion>
           ))
