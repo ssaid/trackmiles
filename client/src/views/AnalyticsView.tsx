@@ -100,7 +100,7 @@ export const AnalyticsView = () => {
       <Stack
         my={5}
       >
-        <FlightsTable data={data}/>
+        <FlightsTable data={{ ...data, details: data.details.filter(d => new Date(d.flight_date) > new Date() ) }}/>
         <HeatMap data={data}/>
         <ColumnBar origin={origin} destination={destination} />
       </Stack>
