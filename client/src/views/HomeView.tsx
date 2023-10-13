@@ -1,7 +1,8 @@
-import { Backdrop, Box, Stack, Typography } from "@mui/material"
+import { Backdrop, Box, Icon, Stack, Typography } from "@mui/material"
 import { SearchBar } from "../components/SearchBar"
 
 import bg from '../assets/bg.jpg'
+import logo from '../assets/logo.png'
 import { FaqButton } from "../components/faqButton"
 
 
@@ -35,13 +36,16 @@ export const HomeView = () => {
           justifyContent="space-evenly"
           alignItems="center"
         >
-          <Typography 
-            variant="h2"
-            className="italic"
-            color="grey.300"
-          >
-            Milleros
-          </Typography>
+          <Stack flexDirection="row" gap={1}>
+            <img src={logo} className="w-20 h-20"/>
+            <Typography 
+              variant="h2"
+              className="italic"
+              color="grey.300"
+            >
+              Milleros
+            </Typography>
+          </Stack>
 
           <SearchBar />
         </Stack>

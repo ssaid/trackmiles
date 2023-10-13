@@ -261,7 +261,7 @@ export const FlightsTable = ({ data }: FlightsTableProps) => {
                         to={row.external_link as string}
                         target="_blank"
                       >
-                        <Button variant='contained'>Ir a Smiles</Button>
+                        <Button variant='contained'>Ver</Button>
                       </Link>
                     </TableCell>
                   </TableRow>

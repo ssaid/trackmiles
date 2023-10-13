@@ -4,6 +4,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { Box, Container, Stack } from "@mui/system"
 import { Link } from "react-router-dom"
 
+import logo from '../assets/logo.png'
 
 
 export const FaqsView = () => {
@@ -13,14 +14,18 @@ export const FaqsView = () => {
   if (faqs) return (
     <Container maxWidth='xl'>
       <Stack p={2}  >
-        <Typography 
-          variant="h3"
-          className="italic"
-        >
-          <Link to='/'>
-            Milleros
-          </Link>
-        </Typography>
+        <Link to='/'>
+          <Stack flexDirection="row" gap={1} alignItems="center">
+            <img src={logo} className="w-16 h-16"/>
+            <Typography 
+              variant="h3"
+              className="italic"
+              color="grey.300"
+            >
+              Milleros
+            </Typography>
+          </Stack>
+        </Link>
       </Stack>
 
       <Stack px={2}  >

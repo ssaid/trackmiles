@@ -1,4 +1,4 @@
-import { Link, Navigate, useParams, useSearchParams } from "react-router-dom";
+import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { PiAirplaneInFlightFill } from "react-icons/pi";
 import { 
   Stack,
@@ -14,6 +14,8 @@ import { Spinner } from "../components/spinner";
 import { FlightsTable } from "../components/analytics/table";
 import { HeatMap } from "../components/analytics/heatmap";
 import { ColumnBar } from "../components/analytics/column-bar";
+
+import logo from '../assets/logo.png'
 
 
 export const AnalyticsView = () => {
@@ -55,14 +57,18 @@ export const AnalyticsView = () => {
   return (
     <Container maxWidth="xl">
       <Stack p={2}  >
-        <Typography 
-          variant="h3"
-          className="italic"
-        >
-          <Link to='/'>
-            Milleros
-          </Link>
-        </Typography>
+        <Link to='/'>
+          <Stack flexDirection="row" gap={1} alignItems="center">
+            <img src={logo} className="w-16 h-16"/>
+            <Typography 
+              variant="h3"
+              className="italic"
+              color="grey.300"
+            >
+              Milleros
+            </Typography>
+          </Stack>
+        </Link>
       </Stack>
       <Stack 
         direction="row"
