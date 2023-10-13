@@ -1,6 +1,7 @@
-FROM node:19-alpine3.16 as build-stage
+FROM node:18-alpine as build-stage
 WORKDIR /app
 COPY package*.json ./
+COPY yarn.lock ./
 RUN yarn install
 COPY ./ .
 ARG VITE_MILLEROS_BASE_URL
