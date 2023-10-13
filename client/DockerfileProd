@@ -13,4 +13,5 @@ RUN yarn build
 FROM nginx as production-stage
 RUN mkdir /app
 COPY --from=build-stage /app/dist /app
+RUN echo "google.com, pub-4257626392603206, DIRECT, f08c47fec0942fa0" > /app/ads.txt
 COPY nginx.conf /etc/nginx/nginx.conf
